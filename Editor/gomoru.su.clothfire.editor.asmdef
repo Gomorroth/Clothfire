@@ -1,9 +1,11 @@
 {
     "name": "gomoru.su.clothfire.editor",
     "references": [
+        "gomoru.su.clothfire.runtime",
         "nadena.dev.modular-avatar.core",
         "nadena.dev.modular-avatar.core.editor",
-        "nadena.dev.ndmf"
+        "nadena.dev.ndmf",
+        "nadena.dev.ndmf.runtime"
     ],
     "includePlatforms": [
         "Editor"
