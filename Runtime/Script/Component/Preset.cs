@@ -7,7 +7,7 @@ using VRC.SDK3.Avatars.Components;
 namespace gomoru.su.clothfire
 {
     [AddComponentMenu("Clothfire/Preset")]
-    public sealed class Preset : ClothfireBaseComponent
+    public sealed class Preset : ClothfireBaseComponent, IHierarchyChangedCallback
     {
         public List<PresetItem> Targets = new List<PresetItem>();
         public int HashCode;
@@ -55,6 +55,11 @@ namespace gomoru.su.clothfire
                 hash = hash.Append(item.Path.GetHashCode());
             }
             return hash.GetHashCode();
+        }
+
+        public void OnHierarchyChanged()
+        {
+            TryRefleshItems();
         }
 
         [Serializable]

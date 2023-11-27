@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace gomoru.su.clothfire
 {
@@ -21,9 +22,9 @@ namespace gomoru.su.clothfire
             if (EditorApplication.isPlayingOrWillChangePlaymode)
                 return;
 
-            foreach(var component in GameObject.FindObjectsOfType<CostumeControlGenerator>())
+            foreach(var component in Object.FindObjectsOfType<Component>().Where(x => x is IHierarchyChangedCallback))
             {
-                component.TryRefleshItems();
+                (component as IHierarchyChangedCallback).OnHierarchyChanged();
             }
         }
     }
