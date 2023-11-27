@@ -43,7 +43,7 @@ namespace gomoru.su.clothfire
                 displayRemove = true,
                 draggable = true,
                 headerHeight = 0.5f,
-                elementHeightCallback = idx => AdditionalControlDrawer.Default.GetPropertyHeight(null, null),
+                elementHeightCallback = idx => AdditionalControlDrawer.Height,
                 drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => EditorGUI.PropertyField(rect, _additionalControlList.serializedProperty.GetArrayElementAtIndex(index)),
             };
         }
@@ -72,7 +72,7 @@ namespace gomoru.su.clothfire
 
                     for (int i = 0; i < count; i++)
                     {
-                        height += AdditionalControlDrawer.Default.GetPropertyHeight(null, null);
+                        height += AdditionalControlDrawer.Height;
                     }
                     height += EditorGUIUtility.singleLineHeight;
                 }
@@ -149,7 +149,7 @@ namespace gomoru.su.clothfire
                             displayRemove = true,
                             draggable = true,
                             headerHeight = 0.5f,
-                            elementHeightCallback = idx => AdditionalControlDrawer.Default.GetPropertyHeight(null, null),
+                            elementHeightCallback = idx => AdditionalControlDrawer.Height,
                             drawElementCallback = (Rect rect2, int index2, bool isActive2, bool isFocused2) => EditorGUI.PropertyField(rect2, _additionalControls.GetArrayElementAtIndex(index2)),
                         };
                         _additionalControlLists.Add(index, list);

@@ -22,7 +22,7 @@ namespace gomoru.su.clothfire
                 displayRemove = true,
                 draggable = true,
                 drawHeaderCallback = rect => EditorGUI.LabelField(rect, "Additional Controls"),
-                elementHeightCallback = idx => AdditionalControlDrawer.Default.GetPropertyHeight(null, null),
+                elementHeightCallback = idx => AdditionalControlDrawer.Height,
                 drawElementCallback = (Rect rect, int index, bool isActive, bool isFocused) => EditorGUI.PropertyField(rect, _additionalControlList.serializedProperty.GetArrayElementAtIndex(index)),
             };
         }

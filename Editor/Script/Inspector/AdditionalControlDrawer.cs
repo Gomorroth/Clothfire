@@ -11,7 +11,8 @@ namespace gomoru.su.clothfire
     [CustomPropertyDrawer(typeof(AdditionalControl))]
     internal sealed class AdditionalControlDrawer : PropertyDrawer
     {
-        public static readonly AdditionalControlDrawer Default = new AdditionalControlDrawer();
+        public static float Height => (EditorGUIUtility.singleLineHeight * 4) + 20;
+
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             float lineCount = 4;
