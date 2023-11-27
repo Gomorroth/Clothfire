@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,12 +11,5 @@ namespace gomoru.su.clothfire
     {
         public List<Condition> Conditions;
         public List<AdditionalControl> Controls;
-
-        [Serializable]
-        public struct Condition
-        {
-            public string Path;
-            public bool State;
-        }
     }
 }

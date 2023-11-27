@@ -31,8 +31,8 @@ namespace gomoru.su.clothfire
                 drawElementCallback = (rect, index, active, focused) =>
                 {
                     var prop = _conditionList.serializedProperty.GetArrayElementAtIndex(index);
-                    var path = prop.FindPropertyRelative(nameof(ConditionalController.Condition.Path));
-                    var state = prop.FindPropertyRelative(nameof(ConditionalController.Condition.State));
+                    var path = prop.FindPropertyRelative(nameof(Condition.Path));
+                    var state = prop.FindPropertyRelative(nameof(Condition.State));
 
                     int idx = _targets.AsSpan(0, _conditions.Length).IndexOf(x => x == path.stringValue);
 
