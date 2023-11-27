@@ -163,5 +163,14 @@ namespace gomoru.su.clothfire
                 //EditorGUI.indentLevel--;
             }
         }
+
+        [MenuItem("CONTEXT/CostumeControlGenerator/Sort Items")]
+        public static void SortItems(MenuCommand command)
+        {
+            var generator = command.context as CostumeControlGenerator;
+            var obj = generator.gameObject.GetRootObject();
+            generator.Items.Sort((x, y) => obj.Find(x.Path).transform.GetSiblingIndex() - obj.Find(y.Path).transform.GetSiblingIndex());
+            generator.MarkDirty();
+        }
     }
 }
