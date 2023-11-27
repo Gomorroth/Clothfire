@@ -110,6 +110,18 @@ namespace gomoru.su.clothfire
             return false;
         }
 
+        public static int IndexOf<T>(this Span<T> span, Predicate<T> condition) => ((ReadOnlySpan<T>)span).IndexOf(condition);
+
+        public static int IndexOf<T>(this ReadOnlySpan<T> span, Predicate<T> condition)
+        {
+            for(int i = 0; i <  span.Length; i++)
+            {
+                if (condition(span[i]))
+                    return i;
+            }
+            return -1;
+        }
+
         public static Span<T> AsSpan<T>(this List<T> list)
         {
             var dummy = Unsafe.As<DummyList<T>>(list);
