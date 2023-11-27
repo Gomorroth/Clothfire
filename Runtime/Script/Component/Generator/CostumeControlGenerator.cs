@@ -7,7 +7,7 @@ namespace gomoru.su.clothfire
 {
     [DisallowMultipleComponent]
     [AddComponentMenu("Clothfire/Generator/Costume Control Generator")]
-    public sealed class CostumeControlGenerator : ClothfireBaseComponent, IControlTargetProvider
+    public sealed class CostumeControlGenerator : ClothfireBaseComponent, IControlTargetProvider, IControlGroup
     {
         public int HashCode;
         public List<ClothItem> Items = new List<ClothItem>();
