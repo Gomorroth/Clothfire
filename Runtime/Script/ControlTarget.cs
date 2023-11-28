@@ -24,11 +24,13 @@ namespace gomoru.su.clothfire
 
         public Object Parent;
         public string Path;
+        public bool DefaultState;
 
-        public ControlTarget(Object parent, GameObject obj)
+        public ControlTarget(Object parent, GameObject obj, bool defaultState)
         {
             Parent = parent;
             Path = obj.GetRelativePath(obj.GetComponentInParent<VRCAvatarDescriptor>().gameObject);
+            DefaultState = defaultState;
         }
     }
 }

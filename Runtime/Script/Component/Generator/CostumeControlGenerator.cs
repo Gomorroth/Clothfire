@@ -12,6 +12,8 @@ namespace gomoru.su.clothfire
         public int HashCode;
         public List<ClothItem> Items = new List<ClothItem>();
 
+        public string GroupName => gameObject.name;
+
         public bool TryRefleshItems()
         {
             var hashCode = GetHierarchyHashCode(gameObject);
@@ -65,7 +67,7 @@ namespace gomoru.su.clothfire
         {
             foreach(var item in Items.AsSpan())
             {
-                destination.Add(new ControlTarget(this, transform.Find(item.Path).gameObject));
+                destination.Add(new ControlTarget(this, transform.Find(item.Path).gameObject, item.IsActiveByDefault));
             }
         }
 

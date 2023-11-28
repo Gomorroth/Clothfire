@@ -2,6 +2,6 @@
 {
     public interface IControlGroup
     {
-
+        string GroupName { get; }
     }
 }
