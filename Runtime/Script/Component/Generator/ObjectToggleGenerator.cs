@@ -34,11 +34,14 @@ namespace gomoru.su.clothfire
         {
         }
 
-        void IAdditionalControlProvider.GetAdditionalControls(List<(SingleOrArray<Condition> Conditions, SingleOrArray<AdditionalControl> Controls)> destination)
+        void IAdditionalControlProvider.GetAdditionalControls(AdditionalControlContainer destination)
         {
             var path = gameObject.GetRelativePath(gameObject.GetRootObject());
-            var condition = new Condition(path);
-            destination.Add((condition, AdditionalControls));
+            var condition = new[] { new Condition(path) };
+            foreach(var control in AdditionalControls)
+            {
+                destination.Add(condition, control);
+            }
         }
     }
 }

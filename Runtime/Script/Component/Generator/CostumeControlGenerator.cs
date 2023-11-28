@@ -76,12 +76,15 @@ namespace gomoru.su.clothfire
             TryRefleshItems();
         }
 
-        void IAdditionalControlProvider.GetAdditionalControls(List<(SingleOrArray<Condition> Conditions, SingleOrArray<AdditionalControl> Controls)> destination)
+        void IAdditionalControlProvider.GetAdditionalControls(AdditionalControlContainer destination)
         {
             foreach(var item in Items.AsSpan())
             {
-                var condition = new Condition(item.Path);
-                destination.Add((condition, item.AdditionalControls));
+                var conditions = new[] { new Condition(gameObject.Find(item.Path).GetRelativePath(gameObject.GetRootObject())) };
+                foreach(var controls in item.AdditionalControls)
+                {
+                    destination.Add(conditions, controls);
+                }
             }
         }
     }

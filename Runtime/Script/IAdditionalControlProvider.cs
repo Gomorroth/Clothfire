@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -10,39 +11,46 @@ namespace gomoru.su.clothfire
 {
     internal interface IAdditionalControlProvider
     {
-        void GetAdditionalControls(List<(SingleOrArray<Condition> Conditions, SingleOrArray<AdditionalControl> Controls)> destination);
+        void GetAdditionalControls(AdditionalControlContainer destination);
     }
 
-    internal readonly struct SingleOrArray<T>
+    internal sealed class AdditionalControlContainer
     {
-        public readonly T Value;
-        public readonly IEnumerable<T> Values;
-        private readonly int _count;
+        private Dictionary<IEnumerable<Condition>, List<AdditionalControl>> _dictionary = new Dictionary<IEnumerable<Condition>, List<AdditionalControl>>(new Comparer());
 
-        public SingleOrArray(T value, T[] values) : this(value, values, values?.Length ?? 1) { }
 
-        public SingleOrArray(T value, IEnumerable<T> values, int count)
+        public void Add(IEnumerable<Condition> key, AdditionalControl control)
         {
-            Value = value;
-            Values = values;
-            _count = count;
+            if (!_dictionary.TryGetValue(key, out var list))
+            {
+                list = new List<AdditionalControl>() { control };
+                _dictionary.Add(key, list);
+            }
+            else
+            {
+                list.Add(control);
+            }
         }
 
-        public int Length => _count;
+        public ILookup<IEnumerable<Condition>, AdditionalControl> Items => _dictionary.SelectMany(x => x.Value, Tuple.Create).ToLookup(x => x.Item1.Key, x => x.Item2);
 
-        public static implicit operator SingleOrArray<T>(T value)
+        private sealed class Comparer : IEqualityComparer<IEnumerable<Condition>>
         {
-            return new SingleOrArray<T>(value, null, 1);
-        }
+            public bool Equals(IEnumerable<Condition> x, IEnumerable<Condition> y)
+            {
+                return (x == null && y == null) || GetHashCode(x) == GetHashCode(y);
+            }
 
-        public static implicit operator SingleOrArray<T>(T[] value)
-        {
-            return new SingleOrArray<T>(default, value, value.Length);
-        }
-
-        public static implicit operator SingleOrArray<T>(List<T> value)
-        {
-            return new SingleOrArray<T>(default, value, value.Count);
+            public int GetHashCode(IEnumerable<Condition> obj)
+            {
+                var hash = new HashCode();
+                foreach(var condition in obj)
+                {
+                    hash = hash.Append(condition.Path);
+                    hash = hash.Append(condition.State);
+                }
+                return hash.GetHashCode();
+            }
         }
     }
 }

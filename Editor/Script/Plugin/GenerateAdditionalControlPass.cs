@@ -14,26 +14,33 @@ namespace gomoru.su.clothfire.ndmf
             var treeRoot = Session.DirectBlendTree.AddDirectBlendTree();
             treeRoot.Name = "Additional Controls";
 
-            var controls = new List<(SingleOrArray<Condition> Conditions, SingleOrArray<AdditionalControl> Controls)>();
+            var container = new AdditionalControlContainer();
 
             foreach (var x in context.AvatarRootObject.GetComponentsInChildren<IAdditionalControlProvider>())
             {
-                x.GetAdditionalControls(controls);
+                x.GetAdditionalControls(container);
             }
 
             var gameObjects = new List<GameObject>();
 
-            foreach(var control in controls.AsSpan())
+            foreach(var item in container.Items)
             {
-                var objects = control.Conditions.Values is null ? Enumerable.Repeat(context.AvatarRootObject.Find(control.Conditions.Value.Path), 1) : control.Conditions.Values.Select(x => context.AvatarRootObject.Find(x.Path));
-                var tree = treeRoot.AddLogicANDGate();
-                var name = control.Conditions.Values is null ? Path.GetFileName(control.Conditions.Value.Path) : string.Join(",", control.Conditions.Values.Select(y => Path.GetFileName(y.Path)));
+                Debug.Log($"{string.Join(",", item.Key.Select(x => x.Path))}");
+                var conditions = item.Key;
+                var tree = treeRoot.AddAndGate();
 
+                var objects = item.Key.Select(x => context.AvatarRootObject.Find(x.Path));
+                var name = string.Join(",", objects.Select(x => x.name));
                 var off = new AnimationClip() { name = $"{name} OFF" };
                 var on = new AnimationClip() { name = $"{name} ON" };
 
                 AssetDatabase.AddObjectToAsset(off, AssetContainer);
                 AssetDatabase.AddObjectToAsset(on, AssetContainer);
+
+                foreach (var control in item)
+                {
+
+                }
 
                 tree.OFF = off;
                 tree.ON = on;

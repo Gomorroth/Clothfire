@@ -12,9 +12,13 @@ namespace gomoru.su.clothfire
         public List<Condition> Conditions;
         public List<AdditionalControl> Controls;
 
-        void IAdditionalControlProvider.GetAdditionalControls(List<(SingleOrArray<Condition> Conditions, SingleOrArray<AdditionalControl> Controls)> destination)
+        void IAdditionalControlProvider.GetAdditionalControls(AdditionalControlContainer destination)
         {
-            destination.Add((Conditions, Controls));
+            var conditions = Conditions.ToArray();
+            foreach(var controls in Controls)
+            {
+                destination.Add(conditions, controls);
+            }
         }
     }
 }
