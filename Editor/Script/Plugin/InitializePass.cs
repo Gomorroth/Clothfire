@@ -7,7 +7,7 @@ namespace gomoru.su.clothfire.ndmf
     {
         protected override bool Run(BuildContext context)
         {
-            Session.DirectBlendTree = new DirectBlendTree(context.AssetContainer);
+            Session.DirectBlendTree = new DirectBlendTree();
             var targets = ControlTarget.GetControlTargets(context.AvatarRootObject);
             var objects = Session.ControlTargets = new ControlTargetObject[targets.Length];
             

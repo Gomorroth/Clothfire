@@ -28,7 +28,7 @@ namespace gomoru.su.clothfire.ndmf
         private void GenerateMergeAnimator(BuildContext context)
         {
             var controller = new AnimatorController() { name = "Clothfire" };
-            var layer = Session.DirectBlendTree.ToAnimatorControllerLayer();
+            var layer = Session.DirectBlendTree.ToAnimatorControllerLayer(context.AssetContainer);
             controller.AddLayer(layer);
             controller.AddParameter(new AnimatorControllerParameter() { name = "1", type = AnimatorControllerParameterType.Float, defaultFloat = 1 });
             AssetDatabase.AddObjectToAsset(controller, context.AssetContainer);
