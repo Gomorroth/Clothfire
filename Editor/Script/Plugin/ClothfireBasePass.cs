@@ -1,5 +1,7 @@
-﻿using nadena.dev.ndmf;
+﻿using System;
+using nadena.dev.ndmf;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace gomoru.su.clothfire.ndmf
 {
@@ -17,8 +19,16 @@ namespace gomoru.su.clothfire.ndmf
             if (Session.Handled)
                 return;
 
-            if (!Run(context))
+            try
             {
+                if (!Run(context))
+                {
+                    Session.Handled = true;
+                }
+            }
+            catch(Exception e)
+            {
+                Debug.LogException(e);
                 Session.Handled = true;
             }
         }
