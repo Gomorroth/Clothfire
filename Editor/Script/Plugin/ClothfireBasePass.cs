@@ -1,4 +1,5 @@
 ﻿using nadena.dev.ndmf;
+using UnityEngine;
 
 namespace gomoru.su.clothfire.ndmf
 {
@@ -7,10 +8,12 @@ namespace gomoru.su.clothfire.ndmf
         public override string DisplayName => $"Clothfire{typeof(T).Name}";
 
         protected Session Session { get; private set; }
+        protected Object AssetContainer { get; private set; }
 
         protected override void Execute(BuildContext context)
         {
             Session = context.GetState<Session>();
+            AssetContainer = context.AssetContainer;
             if (Session.Handled)
                 return;
 

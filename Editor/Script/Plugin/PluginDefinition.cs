@@ -20,6 +20,7 @@ namespace gomoru.su.clothfire.ndmf
                 .BeforePlugin("nadena.dev.modular-avatar")
                 .Run(new InitializePass()).Then
                 .Run(new GeneratePass()).Then
+                .Run(new GenerateAdditionalControlPass()).Then
                 .Run(new FinalizePass());
         }
     }
