@@ -12,6 +12,8 @@ namespace gomoru.su.clothfire
         public List<Condition> Conditions;
         public List<AdditionalControl> Controls;
 
+        GameObject IAdditionalControlProvider.GameObject => gameObject;
+
         void IAdditionalControlProvider.GetAdditionalControls(AdditionalControlContainer destination)
         {
             var conditions = Conditions.ToArray();

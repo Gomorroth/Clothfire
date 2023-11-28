@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace gomoru.su.clothfire
 {
@@ -15,5 +16,8 @@ namespace gomoru.su.clothfire
         public bool IsAbsolute = false;
         public BlendshapeControl Blendshape;
         public AnimationControl Animation;
+
+        [NonSerialized]
+        public GameObject Root;
     }
 }

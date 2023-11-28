@@ -18,6 +18,8 @@ namespace gomoru.su.clothfire.ndmf
 
             foreach (var x in context.AvatarRootObject.GetComponentsInChildren<IAdditionalControlProvider>())
             {
+                container.CurrentRootObject = x.GameObject;
+
                 x.GetAdditionalControls(container);
             }
 
@@ -39,7 +41,15 @@ namespace gomoru.su.clothfire.ndmf
 
                 foreach (var control in item)
                 {
-
+                    switch (control.Type)
+                    {
+                        case AdditionalControl.ControlType.AnimationClip:
+                            SetAnimationClipAnimaiton(control, off, on);
+                            break;
+                        case AdditionalControl.ControlType.Blendshape:
+                            SetBlendshapeAnimation(control, context.AvatarRootObject, off, on);
+                            break;
+                    }
                 }
 
                 tree.OFF = off;
@@ -49,6 +59,30 @@ namespace gomoru.su.clothfire.ndmf
             }
 
             return true;
+        }
+
+        private void SetAnimationClipAnimaiton(AdditionalControl control, AnimationClip off, AnimationClip on)
+        {
+
+        }
+
+        private void SetBlendshapeAnimation(AdditionalControl control, GameObject avatarRootObject, AnimationClip off, AnimationClip on)
+        {
+            var blendshape = control.Blendshape;
+            GameObject target;
+            string path;
+            if (control.IsAbsolute)
+            {
+                target = avatarRootObject.Find(blendshape.Path);
+                path = blendshape.Path;
+            }
+            else
+            {
+                target = control.Root.Find(blendshape.Path);
+                path = target.GetRelativePath(avatarRootObject);
+            }
+
+
         }
     }
 }

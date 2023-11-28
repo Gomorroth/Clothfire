@@ -6,11 +6,13 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace gomoru.su.clothfire
 {
     internal interface IAdditionalControlProvider
     {
+        GameObject GameObject { get; }
         void GetAdditionalControls(AdditionalControlContainer destination);
     }
 
@@ -18,9 +20,11 @@ namespace gomoru.su.clothfire
     {
         private Dictionary<IEnumerable<Condition>, List<AdditionalControl>> _dictionary = new Dictionary<IEnumerable<Condition>, List<AdditionalControl>>(new Comparer());
 
+        public GameObject CurrentRootObject;
 
         public void Add(IEnumerable<Condition> key, AdditionalControl control)
         {
+            control.Root = CurrentRootObject;
             if (!_dictionary.TryGetValue(key, out var list))
             {
                 list = new List<AdditionalControl>() { control };
