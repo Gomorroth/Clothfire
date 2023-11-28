@@ -12,33 +12,10 @@ namespace gomoru.su.clothfire
 {
     internal static class AssetUtils
     {
-        public static GUID GetGUID(this Object obj)
+        public static T AddTo<T>(this T asset, Object destination) where T : Object
         {
-            if (GetGUIDAndLocalIdentifierInFile(obj.GetInstanceID(), out var guid, out long _))
-            {
-                return guid;
-            }
-            return default;
+            AssetDatabase.AddObjectToAsset(asset, destination);
+            return asset;
         }
-
-        [MethodImpl(MethodImplOptions.InternalCall)]
-        [FreeFunction("AssetDatabase::GetGUIDAndLocalIdentifierInFile")]
-        private static extern bool GetGUIDAndLocalIdentifierInFile(int instanceID, out GUID outGuid, out long outLocalId);
-    }
-}
-namespace UnityEngine.Bindings
-{
-
-    [AttributeUsage(AttributeTargets.Method)]
-    internal class FreeFunctionAttribute : Attribute
-    {
-        public FreeFunctionAttribute()
-        {
-        }
-
-        public FreeFunctionAttribute(string name) { }
-        
-
-        public FreeFunctionAttribute(string name, bool isThreadSafe) { }
     }
 }
