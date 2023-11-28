@@ -91,7 +91,8 @@ namespace gomoru.su.clothfire.ndmf
                 var obj = target.Object;
                 var name = target.Name;
                 Session.Parameters.Add(CreateParameter(name, target.DefaultState));
-                var toggle = treeParent.AddToggle(name);
+                var toggle = treeParent.AddToggle();
+                toggle.ParameterName = name;
                 toggle.Name = obj.name;
                 (toggle.OFF, toggle.ON) = CreateToggleAnimation(target.Path, name);
             }
