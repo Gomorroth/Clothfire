@@ -8,7 +8,7 @@ namespace gomoru.su.clothfire
 {
     [ExecuteInEditMode]
     [AddComponentMenu("Clothfire/Generator/Object Toggle Generator")]
-    public sealed class ObjectToggleGenerator : ClothfireBaseComponent, IControlTargetProvider
+    public sealed class ObjectToggleGenerator : ClothfireBaseComponent, IControlTargetProvider, IAdditionalControlProvider
     {
         public string Group;
         public bool IsActiveByDefault;
@@ -30,6 +30,13 @@ namespace gomoru.su.clothfire
 
         internal void OnEnable()
         {
+        }
+
+        void IAdditionalControlProvider.GetAdditionalControls(List<(SingleOrArray<Condition> Conditions, SingleOrArray<AdditionalControl> Controls)> destination)
+        {
+            var path = gameObject.GetRelativePath(gameObject.GetRootObject());
+            var condition = new Condition(path);
+            destination.Add((condition, AdditionalControls));
         }
     }
 }
