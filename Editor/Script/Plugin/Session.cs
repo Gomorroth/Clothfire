@@ -8,8 +8,8 @@ namespace gomoru.su.clothfire.ndmf
         public bool Handled;
 
         public DirectBlendTree DirectBlendTree;
-        public ControlTargetObject[] ControlTargets;
+        public ControlTarget[] ControlTargets;
         public List<AvatarParameter> Parameters = new List<AvatarParameter>();
-        public Dictionary<string, string> ParameterDictionary = new Dictionary<string, string>();
+        public Dictionary<GameObject, string> ParameterDictionary = new Dictionary<GameObject, string>();
     }
 }

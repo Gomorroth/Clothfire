@@ -8,29 +8,11 @@ namespace gomoru.su.clothfire.ndmf
     {
         protected override bool Run(BuildContext context)
         {
-            Session.DirectBlendTree = new DirectBlendTree();
-            var targets = ControlTarget.GetControlTargets(context.AvatarRootObject);
-            var objects = Session.ControlTargets = new ControlTargetObject[targets.Length];
-            
-            for(int i = 0; i < objects.Length; i++)
-            {
-                var obj = context.AvatarRootObject.Find(targets[i].Path);
-                string name = obj.name;
-                if (targets[i].Parent is IControlGroup group && !string.IsNullOrEmpty(group.GroupName))
-                {
-                    name = $"{group.GroupName}/{name}";
-                }
-                var targetObj = Unsafe.As<ControlTarget, ControlTargetObject>(ref Unsafe.AsRef(targets[i]));
-                targetObj.Name = name;
-                targetObj.Object = obj;
-
-                Session.ParameterDictionary.Add(targets[i].Path, name);
-
-                objects[i] = targetObj;
-            }
-
-            if (context.AvatarRootObject.GetComponentInChildren<ClothfireBaseComponent>() == null)
+            Session.ControlTargets = ControlTarget.GetControlTargets(context.AvatarRootObject).ToArray();
+            if (Session.ControlTargets.Length == 0)
                 return false;
+
+            Session.DirectBlendTree = new DirectBlendTree();
 
             return true;
         }

@@ -37,8 +37,7 @@ namespace gomoru.su.clothfire
 
         void IAdditionalControlProvider.GetAdditionalControls(AdditionalControlContainer destination)
         {
-            var path = gameObject.GetRelativePath(gameObject.GetRootObject());
-            var condition = new[] { new Condition(path) };
+            var condition = new[] { new AdditionalControlCondition(gameObject, true) };
             foreach(var control in AdditionalControls)
             {
                 destination.Add(condition, control);

@@ -31,9 +31,10 @@ namespace gomoru.su.clothfire.ndmf
                         controlGroup[group.GroupName] = treeParent;
                     }
                 }
-                var obj = target.Object;
-                var name = target.Name;
+                var obj = target.GetTargetObject(context.AvatarRootObject);
+                var name = target.ToParameterName(context.AvatarRootObject);
                 Session.Parameters.Add(CreateParameter(name, target.DefaultState));
+                Session.ParameterDictionary.Add(obj, name);
                 var toggle = treeParent.AddToggle();
                 toggle.ParameterName = name;
                 toggle.Name = obj.name;

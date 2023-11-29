@@ -21,6 +21,7 @@ namespace gomoru.su.clothfire
         private Dictionary<IEnumerable<AdditionalControlCondition>, List<AdditionalControl>> _dictionary = new Dictionary<IEnumerable<AdditionalControlCondition>, List<AdditionalControl>>(new Comparer());
 
         public GameObject CurrentRootObject;
+        public GameObject AvatarRootObject;
 
         public void Add(IEnumerable<AdditionalControlCondition> key, AdditionalControl control)
         {
@@ -50,8 +51,8 @@ namespace gomoru.su.clothfire
                 var hash = new HashCode();
                 foreach(var condition in obj)
                 {
-                    hash = hash.Append(condition.Parameter);
-                    hash = hash.Append(condition.Threshold);
+                    hash = hash.Append(condition.Object);
+                    hash = hash.Append(condition.State);
                 }
                 return hash.GetHashCode();
             }

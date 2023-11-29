@@ -16,6 +16,7 @@ namespace gomoru.su.clothfire.ndmf
             treeRoot.Name = "Additional Controls";
 
             var container = new AdditionalControlContainer();
+            container.AvatarRootObject = context.AvatarRootObject;
 
             foreach (var x in context.AvatarRootObject.GetComponentsInChildren<IAdditionalControlProvider>())
             {
@@ -23,8 +24,6 @@ namespace gomoru.su.clothfire.ndmf
 
                 x.GetAdditionalControls(container);
             }
-
-            var gameObjects = new List<GameObject>();
 
             foreach(var item in container.Items)
             {
@@ -111,30 +110,31 @@ namespace gomoru.su.clothfire.ndmf
             protected override void Apply(BlendTree destination, Object assetContainer)
             {
                 var blendTree = new BlendTree().AddTo(assetContainer);
-                blendTree.useAutomaticThresholds = false;
                 var root = blendTree;
-
+                Debug.LogError(string.Join(",", Conditions.Select(x => x.Object?.name ?? "Null")));
                 foreach(var condition in Conditions.SkipLast(1))
                 {
-                    blendTree.blendParameter = condition.Parameter;
-                    blendTree.AddChild(OFF, 1 - condition.Threshold);
-                    blendTree = blendTree.CreateBlendTreeChild(condition.Threshold);
-                    blendTree.useAutomaticThresholds = false;
+                    blendTree.blendParameter = Session.ParameterDictionary[condition.Object];
+                    BlendTree child;
+                    if (condition.State)
+                    {
+                        blendTree.AddChild(OFF, 0);
+                        child = blendTree.CreateBlendTreeChild(1);
+                    }
+                    else
+                    {
+                        child = blendTree.CreateBlendTreeChild(0);
+                        blendTree.AddChild(OFF, 1);
+                    }
+                    blendTree = child;
                 }
 
                 {
                     var condition = Conditions.LastOrDefault();
 
-                    blendTree.blendParameter = condition.Parameter;
-                    blendTree.AddChild(OFF, 1 - condition.Threshold);
-                    blendTree.AddChild(ON, condition.Threshold);
-                }
-
-                string GetParameter(string parameterName)
-                {
-                    if (!Session.ParameterDictionary.TryGetValue(parameterName, out var parameter))
-                        parameter = null;
-                    return parameter;
+                    blendTree.blendParameter = Session.ParameterDictionary[condition.Object];
+                    blendTree.AddChild(condition.State ? OFF : ON, 0);
+                    blendTree.AddChild(condition.State ? ON : OFF, 1);
                 }
 
                 destination.AddChild(root);

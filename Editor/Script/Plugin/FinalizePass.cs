@@ -70,8 +70,8 @@ namespace gomoru.su.clothfire.ndmf
                         groups.Add(group.GroupName, parent);
                     }
                 }
-                var toggle = CreateMenuToggle(target.Name);
-                toggle.name = target.Object.name;
+                var toggle = CreateMenuToggle(target.ToParameterName(context.AvatarRootObject));
+                toggle.name = target.Path.AsSpan(target.Path.LastIndexOf("/") is int idx && idx == -1 ? 0 : (idx + 1)).ToString();
                 toggle.transform.parent = parent.transform;
             }
         }

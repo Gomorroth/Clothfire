@@ -4,7 +4,13 @@ namespace gomoru.su.clothfire
 {
     internal struct AdditionalControlCondition
     {
-        public string Parameter;
-        public float Threshold;
+        public GameObject Object;
+        public bool State;
+
+        public AdditionalControlCondition(GameObject obj, bool state)
+        {
+            Object = obj;
+            State = state;
+        }
     }
 }

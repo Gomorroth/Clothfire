@@ -32,5 +32,22 @@ namespace gomoru.su.clothfire
             Path = obj.GetRelativePath(obj.GetComponentInParent<VRCAvatarDescriptor>().gameObject);
             DefaultState = defaultState;
         }
+
+        public string ToParameterName(GameObject avatarRootObject)
+        {
+            var obj = avatarRootObject.Find(Path);
+            if (obj == null)
+            {
+                return null;
+            }
+            var name = obj.name;
+            if (Parent is IControlGroup group)
+            {
+                name = $"{group.GroupName}/{name}";
+            }
+            return name;
+        }
+
+        public GameObject GetTargetObject(GameObject avatarRootObject) => avatarRootObject.Find(Path);
     }
 }

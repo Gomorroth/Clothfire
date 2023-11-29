@@ -81,7 +81,7 @@ namespace gomoru.su.clothfire
         {
             foreach(var item in Items.AsSpan())
             {
-                var conditions = new[] { new Condition(gameObject.Find(item.Path).GetRelativePath(gameObject.GetRootObject())) };
+                var conditions = new[] { new AdditionalControlCondition(gameObject.Find(item.Path), true) };
                 foreach(var controls in item.AdditionalControls)
                 {
                     destination.Add(conditions, controls);

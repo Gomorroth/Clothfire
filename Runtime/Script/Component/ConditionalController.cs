@@ -17,7 +17,7 @@ namespace gomoru.su.clothfire
 
         void IAdditionalControlProvider.GetAdditionalControls(AdditionalControlContainer destination)
         {
-            var conditions = Conditions;
+            var conditions = Conditions.Select(x => new AdditionalControlCondition(destination.AvatarRootObject.Find(x.Path), x.State));
             foreach(var controls in Controls)
             {
                 destination.Add(conditions, controls);
