@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Animations;
 using UnityEngine;
 
 namespace gomoru.su.clothfire.ndmf
@@ -27,46 +28,47 @@ namespace gomoru.su.clothfire.ndmf
 
             foreach(var item in container.Items)
             {
-                Debug.Log($"{string.Join(",", item.Key.Select(x => x.Path))}");
-                var conditions = item.Key;
-                var tree = treeRoot.AddAndGate();
+                var tree = new AdditionalControlBlendTree() { Conditions = item.Key, Session = Session };
 
-                var objects = item.Key.Select(x => context.AvatarRootObject.Find(x.Path));
-                var name = string.Join(",", objects.Select(x => x.name));
-                var off = new AnimationClip() { name = $"{name} OFF" };
-                var on = new AnimationClip() { name = $"{name} ON" };
+                var off = new AnimationClip() { name = $"OFF" };
+                var on = new AnimationClip() { name = $"ON" };
 
                 AssetDatabase.AddObjectToAsset(off, AssetContainer);
                 AssetDatabase.AddObjectToAsset(on, AssetContainer);
+
+                bool succss = true;
 
                 foreach (var control in item)
                 {
                     switch (control.Type)
                     {
                         case AdditionalControl.ControlType.AnimationClip:
-                            SetAnimationClipAnimaiton(control, off, on);
+                            succss &= SetAnimationClipAnimaiton(control, off, on);
                             break;
                         case AdditionalControl.ControlType.Blendshape:
-                            SetBlendshapeAnimation(control, context.AvatarRootObject, off, on);
+                            succss &= SetBlendshapeAnimation(control, context.AvatarRootObject, off, on);
                             break;
                     }
+
+                    if (!succss)
+                        break;
                 }
 
                 tree.OFF = off;
                 tree.ON = on;
 
-                tree.Parameters = objects.Select(x => x != null && Session.ParameterDictionary.TryGetValue(x, out var param) ? param : "").ToArray();
+                treeRoot.Add(tree);
             }
 
             return true;
         }
 
-        private void SetAnimationClipAnimaiton(AdditionalControl control, AnimationClip off, AnimationClip on)
+        private bool SetAnimationClipAnimaiton(AdditionalControl control, AnimationClip off, AnimationClip on)
         {
-
+            return true;
         }
 
-        private void SetBlendshapeAnimation(AdditionalControl control, GameObject avatarRootObject, AnimationClip off, AnimationClip on)
+        private bool SetBlendshapeAnimation(AdditionalControl control, GameObject avatarRootObject, AnimationClip off, AnimationClip on)
         {
             var blendshape = control.Blendshape;
             GameObject target;
@@ -82,7 +84,61 @@ namespace gomoru.su.clothfire.ndmf
                 path = target.GetRelativePath(avatarRootObject);
             }
 
+            var renderer = target?.GetComponent<SkinnedMeshRenderer>();
+            var blendshapes = renderer?.EnumerateBlendshapes().ToDictionary(x => x.Name, x => x.Index);
+            if (renderer == null || !blendshapes.TryGetValue(blendshape.Blendshape, out var shapeIdx))
+                return false;
 
+            var offValue = blendshape.IsChangeOFF ? blendshape.OFF : renderer.GetBlendShapeWeight(shapeIdx);
+            var onValue = blendshape.IsChangeON ? blendshape.ON : renderer.GetBlendShapeWeight(shapeIdx);
+
+            off.SetCurve(path, typeof(SkinnedMeshRenderer), $"blendShape.{blendshape.Blendshape}", AnimationCurve.Constant(0, 0, offValue));
+            on.SetCurve(path, typeof(SkinnedMeshRenderer), $"blendShape.{blendshape.Blendshape}", AnimationCurve.Constant(0, 0, onValue));
+
+            return true;
+
+        }
+
+        private sealed class AdditionalControlBlendTree : DirectBlendTreeItemBase
+        {
+            public Motion ON { get; set; }
+            public Motion OFF { get; set; }
+
+            public IEnumerable<AdditionalControlCondition> Conditions { get; set; }
+
+            public Session Session { get; set; }
+
+            protected override void Apply(BlendTree destination, Object assetContainer)
+            {
+                var blendTree = new BlendTree().AddTo(assetContainer);
+                blendTree.useAutomaticThresholds = false;
+                var root = blendTree;
+
+                foreach(var condition in Conditions.SkipLast(1))
+                {
+                    blendTree.blendParameter = condition.Parameter;
+                    blendTree.AddChild(OFF, 1 - condition.Threshold);
+                    blendTree = blendTree.CreateBlendTreeChild(condition.Threshold);
+                    blendTree.useAutomaticThresholds = false;
+                }
+
+                {
+                    var condition = Conditions.LastOrDefault();
+
+                    blendTree.blendParameter = condition.Parameter;
+                    blendTree.AddChild(OFF, 1 - condition.Threshold);
+                    blendTree.AddChild(ON, condition.Threshold);
+                }
+
+                string GetParameter(string parameterName)
+                {
+                    if (!Session.ParameterDictionary.TryGetValue(parameterName, out var parameter))
+                        parameter = null;
+                    return parameter;
+                }
+
+                destination.AddChild(root);
+            }
         }
     }
 }
