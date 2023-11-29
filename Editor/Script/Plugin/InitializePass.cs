@@ -1,5 +1,6 @@
 ﻿using nadena.dev.ndmf;
 using System.Runtime.CompilerServices;
+using UnityEditor.Animations;
 
 namespace gomoru.su.clothfire.ndmf
 {
@@ -23,7 +24,7 @@ namespace gomoru.su.clothfire.ndmf
                 targetObj.Name = name;
                 targetObj.Object = obj;
 
-                Session.ParameterDictionary.Add(obj, name);
+                Session.ParameterDictionary.Add(targets[i].Path, name);
 
                 objects[i] = targetObj;
             }

@@ -10,6 +10,6 @@ namespace gomoru.su.clothfire.ndmf
         public DirectBlendTree DirectBlendTree;
         public ControlTargetObject[] ControlTargets;
         public List<AvatarParameter> Parameters = new List<AvatarParameter>();
-        public Dictionary<GameObject, string> ParameterDictionary = new Dictionary<GameObject, string>();
+        public Dictionary<string, string> ParameterDictionary = new Dictionary<string, string>();
     }
 }
