@@ -18,11 +18,11 @@ namespace gomoru.su.clothfire
 
     internal sealed class AdditionalControlContainer
     {
-        private Dictionary<IEnumerable<Condition>, List<AdditionalControl>> _dictionary = new Dictionary<IEnumerable<Condition>, List<AdditionalControl>>(new Comparer());
+        private Dictionary<IEnumerable<AdditionalControlCondition>, List<AdditionalControl>> _dictionary = new Dictionary<IEnumerable<AdditionalControlCondition>, List<AdditionalControl>>(new Comparer());
 
         public GameObject CurrentRootObject;
 
-        public void Add(IEnumerable<Condition> key, AdditionalControl control)
+        public void Add(IEnumerable<AdditionalControlCondition> key, AdditionalControl control)
         {
             control.Root = CurrentRootObject;
             if (!_dictionary.TryGetValue(key, out var list))
@@ -36,22 +36,22 @@ namespace gomoru.su.clothfire
             }
         }
 
-        public ILookup<IEnumerable<Condition>, AdditionalControl> Items => _dictionary.SelectMany(x => x.Value, Tuple.Create).ToLookup(x => x.Item1.Key, x => x.Item2);
+        public ILookup<IEnumerable<AdditionalControlCondition>, AdditionalControl> Items => _dictionary.SelectMany(x => x.Value, Tuple.Create).ToLookup(x => x.Item1.Key, x => x.Item2);
 
-        private sealed class Comparer : IEqualityComparer<IEnumerable<Condition>>
+        private sealed class Comparer : IEqualityComparer<IEnumerable<AdditionalControlCondition>>
         {
-            public bool Equals(IEnumerable<Condition> x, IEnumerable<Condition> y)
+            public bool Equals(IEnumerable<AdditionalControlCondition> x, IEnumerable<AdditionalControlCondition> y)
             {
                 return (x == null && y == null) || GetHashCode(x) == GetHashCode(y);
             }
 
-            public int GetHashCode(IEnumerable<Condition> obj)
+            public int GetHashCode(IEnumerable<AdditionalControlCondition> obj)
             {
                 var hash = new HashCode();
                 foreach(var condition in obj)
                 {
-                    hash = hash.Append(condition.Path);
-                    hash = hash.Append(condition.State);
+                    hash = hash.Append(condition.Parameter);
+                    hash = hash.Append(condition.Threshold);
                 }
                 return hash.GetHashCode();
             }
