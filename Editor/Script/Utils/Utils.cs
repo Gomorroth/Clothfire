@@ -10,6 +10,16 @@ namespace gomoru.su.clothfire
 {
     internal static class Utils
     {
+        public static TValue GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> valueFactory)
+        {
+            if (!dictionary.TryGetValue(key, out var value))
+            {
+                value = valueFactory(key);
+                dictionary.Add(key, value);
+            }
+            return value;
+        }
+
         public static IEnumerable<(int Index, string Name)> EnumerateBlendshapes(this SkinnedMeshRenderer skinnedMeshRenderer)
         {
             if (skinnedMeshRenderer == null || skinnedMeshRenderer.sharedMesh == null)

@@ -55,48 +55,10 @@ namespace gomoru.su.clothfire.ndmf
             menuRoot.transform.parent = context.AvatarRootTransform;
             menuRoot.AddComponent<ModularAvatarMenuInstaller>();
 
-            var groups = new Dictionary<string, GameObject>();
-            
-            foreach(var target in Session.ControlTargets.AsSpan())
+            foreach(var pass in PluginDefinition.Passes)
             {
-                var parent = menuRoot;
-                if (target.Parent is IControlGroup group && !string.IsNullOrEmpty(group.GroupName))
-                {
-                    if (!groups.TryGetValue(group.GroupName, out parent))
-                    {
-                        parent = CreateSubMenu();
-                        parent.transform.parent = menuRoot.transform;
-                        parent.name = group.GroupName;
-                        groups.Add(group.GroupName, parent);
-                    }
-                }
-                var toggle = CreateMenuToggle(target.ToParameterName(context.AvatarRootObject));
-                toggle.name = target.Path.AsSpan(target.Path.LastIndexOf("/") is int idx && idx == -1 ? 0 : (idx + 1)).ToString();
-                toggle.transform.parent = parent.transform;
+                pass.OnCreateMenu(context, menuRoot);
             }
-        }
-
-        private static GameObject CreateSubMenu()
-        {
-            var obj = CreateMenuItem(out var menuItem);
-            menuItem.Control.type = VRCExpressionsMenu.Control.ControlType.SubMenu;
-            menuItem.MenuSource = SubmenuSource.Children;
-            return obj;
-        }
-
-        private static GameObject CreateMenuToggle(string parameterName)
-        {
-            var obj = CreateMenuItem(out var menuItem);
-            menuItem.Control.type = VRCExpressionsMenu.Control.ControlType.Toggle;
-            menuItem.Control.parameter = new VRCExpressionsMenu.Control.Parameter() { name = parameterName };
-            return obj;
-        }
-
-        private static GameObject CreateMenuItem(out ModularAvatarMenuItem menuItem)
-        {
-            var obj = new GameObject();
-            menuItem = obj.AddComponent<ModularAvatarMenuItem>();
-            return obj;
         }
     }
 }
