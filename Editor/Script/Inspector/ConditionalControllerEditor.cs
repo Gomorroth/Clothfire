@@ -87,9 +87,8 @@ namespace gomoru.su.clothfire
             var targets = ArrayPool<string>.Shared.Rent(items.Length);
             for(int i = 0; i < items.Length; i++)
             {
-                var target = avatarRootObject.Find(items[i].Path);
                 targets[i] = items[i].Path;
-                string name = items[i].Parent is IControlGroup ? $"{items[i].Parent.name}/{target.name}" : $"{target.name}";
+                string name = items[i].ToParameterName(avatarRootObject);
                 contents[i] = new GUIContent(name);
             }
             _conditions = contents;

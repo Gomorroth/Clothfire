@@ -7,10 +7,13 @@ namespace gomoru.su.clothfire
 {
     [DisallowMultipleComponent]
     [AddComponentMenu("Clothfire/Generator/Costume Control Generator")]
-    public sealed class CostumeControlGenerator : ClothfireBaseComponent, IControlTargetProvider, IControlGroup
+    public sealed class CostumeControlGenerator : ClothfireBaseComponent, IControlTargetProvider, IAdditionalControlProvider, IControlGroup, IHierarchyChangedCallback
     {
         public int HashCode;
         public List<ClothItem> Items = new List<ClothItem>();
+
+        public string GroupName => gameObject.name;
+        GameObject IAdditionalControlProvider.GameObject => gameObject;
 
         public bool TryRefleshItems()
         {
@@ -65,7 +68,24 @@ namespace gomoru.su.clothfire
         {
             foreach(var item in Items.AsSpan())
             {
-                destination.Add(new ControlTarget(this, transform.Find(item.Path).gameObject));
+                destination.Add(new ControlTarget(this, transform.Find(item.Path).gameObject, item.IsActiveByDefault));
+            }
+        }
+
+        public void OnHierarchyChanged()
+        {
+            TryRefleshItems();
+        }
+
+        void IAdditionalControlProvider.GetAdditionalControls(AdditionalControlContainer destination)
+        {
+            foreach(var item in Items.AsSpan())
+            {
+                var conditions = new[] { new AdditionalControlCondition(gameObject.Find(item.Path), true) };
+                foreach(var controls in item.AdditionalControls)
+                {
+                    destination.Add(conditions, controls);
+                }
             }
         }
     }

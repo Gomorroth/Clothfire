@@ -1,0 +1,3 @@
+[submodule "Editor/Script/DirectBlendTree"]
+	path = Editor/Script/DirectBlendTree
+	url = https://github.com/gomorroth/DirectBlendTree.git
