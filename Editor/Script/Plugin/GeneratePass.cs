@@ -1,6 +1,8 @@
 ﻿using nadena.dev.modular_avatar.core;
 using nadena.dev.ndmf;
+using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
@@ -42,6 +44,29 @@ namespace gomoru.su.clothfire.ndmf
             }
 
             return true;
+        }
+
+        protected override void OnCreateMenu(BuildContext context, GameObject menu)
+        {
+            var groups = new Dictionary<string, GameObject>();
+
+            foreach (var target in Session.ControlTargets.AsSpan())
+            {
+                var parent = menu.gameObject;
+                if (target.Parent is IControlGroup group && !string.IsNullOrEmpty(group.GroupName))
+                {
+                    if (!groups.TryGetValue(group.GroupName, out parent))
+                    {
+                        parent = CreateSubMenu();
+                        parent.transform.parent = menu.transform;
+                        parent.name = group.GroupName;
+                        groups.Add(group.GroupName, parent);
+                    }
+                }
+                var toggle = CreateMenuToggle(target.ToParameterName(context.AvatarRootObject));
+                toggle.name = target.Path.AsSpan(target.Path.LastIndexOf("/") is int idx && idx == -1 ? 0 : (idx + 1)).ToString();
+                toggle.transform.parent = parent.transform;
+            }
         }
 
         private static AvatarParameter CreateParameter(string name, bool defaultValue)

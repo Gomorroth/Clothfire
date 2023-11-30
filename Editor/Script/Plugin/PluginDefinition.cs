@@ -18,10 +18,20 @@ namespace gomoru.su.clothfire.ndmf
         {
             InPhase(BuildPhase.Transforming)
                 .BeforePlugin("nadena.dev.modular-avatar")
-                .Run(new InitializePass()).Then
-                .Run(new GeneratePass()).Then
-                .Run(new GenerateAdditionalControlPass()).Then
-                .Run(new FinalizePass());
+                .Run(InitializePass.Instance).Then
+                .Run(GeneratePass.Instance).Then
+                .Run(GenerateAdditionalControlPass.Instance).Then
+                .Run(GeneratePresetPass.Instance).Then
+                .Run(FinalizePass.Instance);
         }
+
+        public static readonly IClothfirePass[] Passes = new IClothfirePass[]
+        {
+            InitializePass.Instance,
+            GeneratePass.Instance,
+            GenerateAdditionalControlPass.Instance,
+            GeneratePresetPass.Instance,
+            FinalizePass.Instance,
+        };
     }
 }
