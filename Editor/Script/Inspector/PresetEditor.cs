@@ -50,9 +50,8 @@ namespace gomoru.su.clothfire
                     var incldue = prop.FindPropertyRelative(nameof(Preset.PresetItem.Include));
                     var active = prop.FindPropertyRelative(nameof(Preset.PresetItem.Active));
                     var target = prop.FindPropertyRelative(nameof(Preset.PresetItem.Target));
-                    var parent = target.FindPropertyRelative(nameof(ControlTarget.Parent)).objectReferenceValue;
-                    var path = target.FindPropertyRelative(nameof(ControlTarget.Path)).stringValue;
-                    var obj = _avatar.transform.Find(path)?.gameObject;
+                    var parent = prop.FindPropertyRelative(nameof(Preset.PresetItem.Parent)).objectReferenceValue;
+                    var obj = target.objectReferenceValue as GameObject;
 
                     EditorGUI.BeginDisabledGroup(!incldue.boolValue);
                     active.boolValue = EditorGUI.ToggleLeft(checkRect, GUIContent.none, active.boolValue);
