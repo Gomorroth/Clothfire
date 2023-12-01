@@ -1,4 +1,4 @@
-﻿using nadena.dev.modular_avatar.core;
+using nadena.dev.modular_avatar.core;
 using nadena.dev.ndmf;
 using System;
 using System.Collections.Generic;
@@ -30,8 +30,8 @@ namespace gomoru.su.clothfire.ndmf
             var controller = new AnimatorController() { name = "Clothfire" };
             var layer = Session.DirectBlendTree.ToAnimatorControllerLayer(context.AssetContainer);
             controller.AddLayer(layer);
-            controller.AddParameter(new AnimatorControllerParameter() { name = "1", type = AnimatorControllerParameterType.Float, defaultFloat = 1 });
             AssetDatabase.AddObjectToAsset(controller, context.AssetContainer);
+            Session.Parameters.Add(new AvatarParameter() { Name = "1", AnimatorParameterType = AnimatorControllerParameterType.Float, ExpressionParameterType = ParameterSyncType.NotSynced, DefaultValue = 1 });
 
             var mama = context.AvatarRootObject.AddComponent<ModularAvatarMergeAnimator>();
             mama.animator = controller;
