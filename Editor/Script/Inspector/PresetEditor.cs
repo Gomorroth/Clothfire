@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -61,26 +61,7 @@ namespace gomoru.su.clothfire
                         rect.width *= 0.2f;
                         fieldRect.x += rect.width + 4;
                         fieldRect.width -= rect.width + 4;
-
-                        if (group.GroupMaster is GameObject master)
-                        {
-                            if (GUI.Button(rect, GUIContent.none, EditorStyles.objectField))
-                            {
-                                EditorGUIUtility.PingObject(master);
-                            }
-                            if (Event.current.type == EventType.Repaint)
-                            {
-                                var r = rect;
-                                r.height -= 6f;
-                                r.y += 4f;
-                                r.x += 2;
-                                EditorStyles.label.Draw(r, group.GroupName.ToGUIContent(image: AssetPreview.GetMiniTypeThumbnail(typeof(GameObject))), 0);
-                            }
-                        }
-                        else
-                        {
-                            GUI.Label(rect, group.GroupName, EditorStyles.objectField);
-                        }
+                        DrawGroupMaster(rect, group);
                     }
                     EditorGUI.ObjectField(fieldRect, obj, typeof(GameObject), true);
                     EditorGUI.EndDisabledGroup();
@@ -110,6 +91,29 @@ namespace gomoru.su.clothfire
             _presetList.DoLayoutList();
 
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private static void DrawGroupMaster(Rect rect, IControlGroup group)
+        {
+            if (group.GroupMaster is GameObject master)
+            {
+                if (GUI.Button(rect, GUIContent.none, EditorStyles.objectField))
+                {
+                    EditorGUIUtility.PingObject(master);
+                }
+                if (Event.current.type == EventType.Repaint)
+                {
+                    var r = rect;
+                    r.height -= 6f;
+                    r.y += 4f;
+                    r.x += 2;
+                    EditorStyles.label.Draw(r, group.GroupName.ToGUIContent(image: AssetPreview.GetMiniTypeThumbnail(typeof(GameObject))), 0);
+                }
+            }
+            else
+            {
+                GUI.Label(rect, group.GroupName, EditorStyles.objectField);
+            }
         }
     }
 }
