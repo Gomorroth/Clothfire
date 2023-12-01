@@ -55,24 +55,32 @@ namespace gomoru.su.clothfire
 
                     EditorGUI.BeginDisabledGroup(!incldue.boolValue);
                     active.boolValue = EditorGUI.ToggleLeft(checkRect, GUIContent.none, active.boolValue);
-                    if (parent is CostumeControlGenerator)
+                    if (parent is IControlGroup group && !string.IsNullOrEmpty(group.GroupName))
                     {
                         var rect = fieldRect;
                         rect.width *= 0.2f;
-                        if (GUI.Button(rect, GUIContent.none, EditorStyles.objectField))
-                        {
-                            EditorGUIUtility.PingObject(parent);
-                        }
-                        if (Event.current.type == EventType.Repaint)
-                        {
-                            var r = rect;
-                            r.height -= 6f;
-                            r.y += 4f;
-                            r.x += 2;
-                            EditorStyles.label.Draw(r, parent.name.ToGUIContent(image: AssetPreview.GetMiniTypeThumbnail(typeof(GameObject))), 0);
-                        }
                         fieldRect.x += rect.width + 4;
                         fieldRect.width -= rect.width + 4;
+
+                        if (group.GroupMaster is GameObject master)
+                        {
+                            if (GUI.Button(rect, GUIContent.none, EditorStyles.objectField))
+                            {
+                                EditorGUIUtility.PingObject(master);
+                            }
+                            if (Event.current.type == EventType.Repaint)
+                            {
+                                var r = rect;
+                                r.height -= 6f;
+                                r.y += 4f;
+                                r.x += 2;
+                                EditorStyles.label.Draw(r, group.GroupName.ToGUIContent(image: AssetPreview.GetMiniTypeThumbnail(typeof(GameObject))), 0);
+                            }
+                        }
+                        else
+                        {
+                            GUI.Label(rect, group.GroupName, EditorStyles.objectField);
+                        }
                     }
                     EditorGUI.ObjectField(fieldRect, obj, typeof(GameObject), true);
                     EditorGUI.EndDisabledGroup();

@@ -13,6 +13,7 @@ namespace gomoru.su.clothfire
         public List<ClothItem> Items = new List<ClothItem>();
 
         public string GroupName => gameObject.name;
+        GameObject IControlGroup.GroupMaster => gameObject;
         GameObject IAdditionalControlProvider.GameObject => gameObject;
 
         public bool TryRefleshItems()
