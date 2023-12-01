@@ -40,8 +40,13 @@ namespace gomoru.su.clothfire
             {
                 return null;
             }
+            return GetParameterName(obj, Parent, avatarRootObject);
+        }
+
+        internal static string GetParameterName(GameObject obj, Object parent, GameObject avatarRootObject)
+        {
             var name = obj.name;
-            if (Parent is IControlGroup group)
+            if (parent is IControlGroup group && !string.IsNullOrEmpty(group.GroupName))
             {
                 name = $"{group.GroupName}/{name}";
             }

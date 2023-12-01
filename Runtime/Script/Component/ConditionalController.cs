@@ -17,7 +17,7 @@ namespace gomoru.su.clothfire
 
         void IAdditionalControlProvider.GetAdditionalControls(AdditionalControlContainer destination)
         {
-            var conditions = Conditions.Select(x => new AdditionalControlCondition(destination.AvatarRootObject.Find(x.Path), x.State));
+            var conditions = Conditions.Select(x => new AdditionalControlCondition(x.Object, x.State));
             foreach(var controls in Controls)
             {
                 destination.Add(conditions, controls);
@@ -27,16 +27,16 @@ namespace gomoru.su.clothfire
         [Serializable]
         public struct Condition
         {
-            public string Path;
+            public GameObject Object;
             public bool State;
 
-            public Condition(string parameterName, bool state = true)
+            public Condition(GameObject obj, bool state = true)
             {
-                Path = parameterName;
+                Object = obj;
                 State = state;
             }
 
-            public override int GetHashCode() => new HashCode().Append(Path).Append(State).GetHashCode();
+            public override int GetHashCode() => new HashCode().Append(Object).Append(State).GetHashCode();
         }
     }
 }

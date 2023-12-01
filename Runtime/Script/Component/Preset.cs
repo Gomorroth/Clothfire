@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
+using Object = UnityEngine.Object;
 
 namespace gomoru.su.clothfire
 {
@@ -32,12 +33,12 @@ namespace gomoru.su.clothfire
             var root = GetComponentInParent<VRCAvatarDescriptor>();
             var list = ControlTarget.SharedList;
             list.Clear();
-            Targets.RemoveAll(x => x.Target.Parent == null || gameObject.GetRootObject()?.Find(x.Target.Path) == null);
+            Targets.RemoveAll(x => x.Target == null);
             foreach (var x in root.GetComponentsInChildren<IControlTargetProvider>())
             {
                 x.GetControlTargets(list);
             }
-            Targets.AddRange(list.Where(x => !Targets.Contains(y => x.Path == y.Target.Path)).Select(x => new PresetItem() { Target = x, Include = true, Active = gameObject.GetRootObject()?.Find(x.Path)?.activeInHierarchy ?? false }));
+            Targets.AddRange(list.Where(x => !Targets.Contains(y => x.GetTargetObject(root.gameObject) == y.Target)).Select(x => new PresetItem() { Target = x.GetTargetObject(root.gameObject), Parent = x.Parent, Include = true, Active = gameObject.GetRootObject()?.Find(x.Path)?.activeInHierarchy ?? false }));
             this.MarkDirty();
         }
 
@@ -65,7 +66,8 @@ namespace gomoru.su.clothfire
         [Serializable]
         public struct PresetItem
         {
-            public ControlTarget Target;
+            public GameObject Target;
+            public Object Parent;
             public bool Include;
             public bool Active;
         }

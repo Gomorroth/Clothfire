@@ -17,7 +17,17 @@ namespace gomoru.su.clothfire.ndmf
             GenerateMergeAnimator(context);
             GenerateMenu(context);
 
-            foreach(var x in context.AvatarRootObject.GetComponentsInChildren<ClothfireBaseComponent>())
+            var map = context.AvatarRootObject.AddComponent<ModularAvatarParameters>();
+
+            foreach (var parameter in Session.Parameters.AsSpan())
+            {
+                var param = parameter.ToExpressionParameter();
+                if (!param.nameOrPrefix.StartsWith("//Clothfire/"))
+                param.remapTo = $"//Clothfire/Parameter/{param.nameOrPrefix}";
+                map.parameters.Add(param);
+            }
+
+            foreach (var x in context.AvatarRootObject.GetComponentsInChildren<ClothfireBaseComponent>())
             {
                 Object.DestroyImmediate(x);
             }
@@ -30,20 +40,17 @@ namespace gomoru.su.clothfire.ndmf
             var controller = new AnimatorController() { name = "Clothfire" };
             var layer = Session.DirectBlendTree.ToAnimatorControllerLayer(context.AssetContainer);
             controller.AddLayer(layer);
-            controller.AddParameter(new AnimatorControllerParameter() { name = "1", type = AnimatorControllerParameterType.Float, defaultFloat = 1 });
             AssetDatabase.AddObjectToAsset(controller, context.AssetContainer);
+            Session.Parameters.Add(new AvatarParameter() { Name = "1", AnimatorParameterType = AnimatorControllerParameterType.Float, ExpressionParameterType = ParameterSyncType.NotSynced, DefaultValue = 1 });
 
             var mama = context.AvatarRootObject.AddComponent<ModularAvatarMergeAnimator>();
             mama.animator = controller;
             mama.matchAvatarWriteDefaults = false;
             mama.pathMode = MergeAnimatorPathMode.Absolute;
 
-            var map = context.AvatarRootObject.AddComponent<ModularAvatarParameters>();
-
             foreach (var parameter in Session.Parameters.AsSpan())
             {
                 controller.AddParameter(parameter.ToAnimatorParameter());
-                map.parameters.Add(parameter.ToExpressionParameter());
 
             }
         }

@@ -17,7 +17,7 @@ namespace gomoru.su.clothfire
         private ReorderableList _conditionList;
         private ReorderableList _controlList;
 
-        private string[] _targets;
+        private GameObject[] _targets;
         private GUIContent[] _conditions;
         private static readonly GUIContent[] ONOFF = new[] { new GUIContent("OFF"), new GUIContent("ON") };
 
@@ -31,10 +31,10 @@ namespace gomoru.su.clothfire
                 drawElementCallback = (rect, index, active, focused) =>
                 {
                     var prop = _conditionList.serializedProperty.GetArrayElementAtIndex(index);
-                    var path = prop.FindPropertyRelative(nameof(ConditionalController.Condition.Path));
+                    var path = prop.FindPropertyRelative(nameof(ConditionalController.Condition.Object));
                     var state = prop.FindPropertyRelative(nameof(ConditionalController.Condition.State));
 
-                    int idx = _targets.AsSpan(0, _conditions.Length).IndexOf(x => x == path.stringValue);
+                    int idx = _targets.AsSpan(0, _conditions.Length).IndexOf(x => x == path.objectReferenceValue);
 
                     var rect1 = rect;
                     var rect2 = rect;
@@ -46,7 +46,7 @@ namespace gomoru.su.clothfire
                     idx = EditorGUI.Popup(rect1, idx, _conditions);
                     if (EditorGUI.EndChangeCheck())
                     {
-                        path.stringValue = _targets[idx];
+                        path.objectReferenceValue = _targets[idx];
                     }
 
                     state.boolValue = EditorGUI.Popup(rect2, state.boolValue ? 1 : 0, ONOFF) != 0;
@@ -68,7 +68,7 @@ namespace gomoru.su.clothfire
             if (_targets is null)
                 return;
 
-            ArrayPool<string>.Shared.Return(_targets);
+            ArrayPool<GameObject>.Shared.Return(_targets);
             _targets = null;
         }
 
@@ -84,10 +84,10 @@ namespace gomoru.su.clothfire
         {
             var items = ControlTarget.GetControlTargets(avatarRootObject);
             var contents = new GUIContent[items.Length];
-            var targets = ArrayPool<string>.Shared.Rent(items.Length);
+            var targets = ArrayPool<GameObject>.Shared.Rent(items.Length);
             for(int i = 0; i < items.Length; i++)
             {
-                targets[i] = items[i].Path;
+                targets[i] = avatarRootObject.Find(items[i].Path);
                 string name = items[i].ToParameterName(avatarRootObject);
                 contents[i] = new GUIContent(name);
             }

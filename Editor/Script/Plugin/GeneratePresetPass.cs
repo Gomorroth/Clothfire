@@ -50,7 +50,7 @@ namespace gomoru.su.clothfire.ndmf
 
                     driver.parameters.Add(new VRC.SDKBase.VRC_AvatarParameterDriver.Parameter()
                     {
-                        name = target.Target.ToParameterName(context.AvatarRootObject),
+                        name = ControlTarget.GetParameterName(target.Target, target.Parent, context.AvatarRootObject),
                         type = VRC.SDKBase.VRC_AvatarParameterDriver.ChangeType.Set,
                         value = VRCParameterConversion.ToSingle(target.Active)
                     });
