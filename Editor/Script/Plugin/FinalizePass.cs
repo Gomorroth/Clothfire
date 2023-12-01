@@ -1,4 +1,4 @@
-using nadena.dev.modular_avatar.core;
+﻿using nadena.dev.modular_avatar.core;
 using nadena.dev.ndmf;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,17 @@ namespace gomoru.su.clothfire.ndmf
             GenerateMergeAnimator(context);
             GenerateMenu(context);
 
-            foreach(var x in context.AvatarRootObject.GetComponentsInChildren<ClothfireBaseComponent>())
+            var map = context.AvatarRootObject.AddComponent<ModularAvatarParameters>();
+
+            foreach (var parameter in Session.Parameters.AsSpan())
+            {
+                var param = parameter.ToExpressionParameter();
+                if (!param.nameOrPrefix.StartsWith("//Clothfire/"))
+                param.remapTo = $"//Clothfire/Parameter/{param.nameOrPrefix}";
+                map.parameters.Add(param);
+            }
+
+            foreach (var x in context.AvatarRootObject.GetComponentsInChildren<ClothfireBaseComponent>())
             {
                 Object.DestroyImmediate(x);
             }
@@ -38,12 +48,9 @@ namespace gomoru.su.clothfire.ndmf
             mama.matchAvatarWriteDefaults = false;
             mama.pathMode = MergeAnimatorPathMode.Absolute;
 
-            var map = context.AvatarRootObject.AddComponent<ModularAvatarParameters>();
-
             foreach (var parameter in Session.Parameters.AsSpan())
             {
                 controller.AddParameter(parameter.ToAnimatorParameter());
-                map.parameters.Add(parameter.ToExpressionParameter());
 
             }
         }
