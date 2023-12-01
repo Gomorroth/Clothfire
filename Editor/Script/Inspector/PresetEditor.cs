@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +17,8 @@ namespace gomoru.su.clothfire
         private VRCAvatarDescriptor _avatar;
         private ReorderableList _presetList;
 
+        private static bool _showToggleByGroup;
+
         internal void OnEnable()
         {
             var preset = target as Preset;
@@ -30,6 +32,7 @@ namespace gomoru.su.clothfire
             {
                 displayAdd = false,
                 displayRemove = false,
+                footerHeight = 0,
                 drawHeaderCallback = rect => EditorGUI.LabelField(rect, "Items"),
                 elementHeightCallback = (index) => EditorGUIUtility.singleLineHeight * (_presetList.serializedProperty.GetArrayElementAtIndex(index).isExpanded ? 2 : 1) + 4,
                 drawElementCallback = (position, index, _1, _2) =>
@@ -88,9 +91,68 @@ namespace gomoru.su.clothfire
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
+
             _presetList.DoLayoutList();
 
+            EditorGUILayout.Space(4);
+            EditorGUILayout.LabelField("Utilities", EditorStyles.boldLabel);
+
+            ToggleByGroup();
+
             serializedObject.ApplyModifiedProperties();
+        }
+
+        private void ToggleByGroup()
+        {
+            if (_showToggleByGroup = EditorGUILayout.BeginFoldoutHeaderGroup(_showToggleByGroup, "Toggle by Group"))
+            {
+                var preset = target as Preset;
+                foreach (var group in preset.Targets.Where(x => x.Parent is IControlGroup group && !string.IsNullOrEmpty(group.GroupName)).GroupBy(x => (x.Parent as IControlGroup).GroupName))
+                {
+                    int tc = 0, fc = 0;
+                    foreach (var x in group)
+                    {
+                        if (x.Active)
+                        {
+                            tc++;
+                        }
+                        else
+                        {
+                            fc++;
+                        }
+                    }
+                    bool value = tc >= fc;
+                    EditorGUI.showMixedValue = tc != 0 && fc != 0;
+                    EditorGUI.BeginChangeCheck();
+
+                    var rect = EditorGUILayout.GetControlRect();
+                    var checkRect = rect;
+                    checkRect.width = EditorStyles.toggle.CalcSize(GUIContent.none).x;
+                    rect.width -= checkRect.width + 2;
+                    rect.x += checkRect.width + 2;
+
+                    value = EditorGUI.Toggle(checkRect, value);
+
+                    bool checkValue = EditorGUI.EndChangeCheck();
+
+                    if (group.FirstOrDefault().Parent is IControlGroup gr && !string.IsNullOrEmpty(gr.GroupName))
+                        DrawGroupMaster(rect, gr);
+
+                    if (checkValue)
+                    {
+                        foreach (ref var x in preset.Targets.AsSpan())
+                        {
+                            if (x.Parent is IControlGroup g && g.GroupName == group.Key)
+                            {
+                                x.Active = value;
+                            }
+                        }
+                        EditorUtility.SetDirty(target);
+                    }
+                    EditorGUI.showMixedValue = false;
+                }
+            }
+            EditorGUILayout.EndFoldoutHeaderGroup();
         }
 
         private static void DrawGroupMaster(Rect rect, IControlGroup group)
