@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
@@ -107,23 +108,11 @@ namespace gomoru.su.clothfire
             if (_showToggleByGroup = EditorGUILayout.BeginFoldoutHeaderGroup(_showToggleByGroup, "Toggle by Group"))
             {
                 var preset = target as Preset;
-                foreach (var group in preset.Targets.Where(x => x.Parent is IControlGroup group && !string.IsNullOrEmpty(group.GroupName)).GroupBy(x => (x.Parent as IControlGroup).GroupName))
+                foreach (var group in preset.Targets.GroupBy(x => (x.Parent as IControlGroup)?.GroupName ?? string.Empty).OrderBy(x => string.IsNullOrEmpty(x.Key)).ThenBy(x => x.Key))
                 {
-                    int tc = 0, fc = 0;
-                    foreach (var x in group)
-                    {
-                        if (x.Active)
-                        {
-                            tc++;
-                        }
-                        else
-                        {
-                            fc++;
-                        }
-                    }
-                    bool value = tc >= fc;
-                    EditorGUI.showMixedValue = tc != 0 && fc != 0;
-                    EditorGUI.BeginChangeCheck();
+                    bool? include = NullIfDifference(group.Select(x => x.Include));
+                    bool? active = NullIfDifference(group.Select(x => x.Active));
+
 
                     var rect = EditorGUILayout.GetControlRect();
                     var checkRect = rect;
@@ -131,20 +120,35 @@ namespace gomoru.su.clothfire
                     rect.width -= checkRect.width + 2;
                     rect.x += checkRect.width + 2;
 
-                    value = EditorGUI.Toggle(checkRect, value);
+                    EditorGUI.showMixedValue = !include.HasValue;
+                    EditorGUI.BeginChangeCheck();
+                    var included = EditorGUI.Toggle(checkRect, include ?? true);
+                    bool includeChanged = EditorGUI.EndChangeCheck();
 
-                    bool checkValue = EditorGUI.EndChangeCheck();
+                    checkRect.x += checkRect.width + 2;
+                    rect.width -= checkRect.width + 2;
+                    rect.x += checkRect.width + 2;
+
+                    EditorGUI.showMixedValue = !active.HasValue;
+                    EditorGUI.BeginChangeCheck();
+                    var actived = EditorGUI.Toggle(checkRect, active ?? true);
+                    bool activeChanged = EditorGUI.EndChangeCheck();
 
                     if (group.FirstOrDefault().Parent is IControlGroup gr && !string.IsNullOrEmpty(gr.GroupName))
                         DrawGroupMaster(rect, gr);
+                    else
+                        GUI.Label(rect, "Other", EditorStyles.objectField);
 
-                    if (checkValue)
+                    if (activeChanged || includeChanged)
                     {
                         foreach (ref var x in preset.Targets.AsSpan())
                         {
                             if (x.Parent is IControlGroup g && g.GroupName == group.Key)
                             {
-                                x.Active = value;
+                                if (activeChanged)
+                                    x.Active = actived;
+                                if (includeChanged)
+                                    x.Include = included;
                             }
                         }
                         EditorUtility.SetDirty(target);
@@ -153,6 +157,23 @@ namespace gomoru.su.clothfire
                 }
             }
             EditorGUILayout.EndFoldoutHeaderGroup();
+        }
+
+        private static T? NullIfDifference<T>(IEnumerable<T> enumerable) where T : struct
+        {
+            T? value = null;
+            foreach (var item in enumerable)
+            {
+                if (!value.HasValue)
+                {
+                    value = item;
+                }
+                else if (!EqualityComparer<T>.Default.Equals(value.Value, item))
+                {
+                    return null;
+                }
+            }
+            return value;
         }
 
         private static void DrawGroupMaster(Rect rect, IControlGroup group)
