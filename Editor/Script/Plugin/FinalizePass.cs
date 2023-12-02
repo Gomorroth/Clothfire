@@ -57,10 +57,23 @@ namespace gomoru.su.clothfire.ndmf
 
         private void GenerateMenu(BuildContext context)
         {
-            var menuRoot = CreateSubMenu();
-            menuRoot.name = "Clothfire";
-            menuRoot.transform.parent = context.AvatarRootTransform;
-            menuRoot.AddComponent<ModularAvatarMenuInstaller>();
+            GameObject menuRoot;
+            if (Session.Configuration == null)
+            {
+                menuRoot = CreateSubMenu();
+                menuRoot.name = "Clothfire";
+                menuRoot.transform.parent = context.AvatarRootTransform;
+                menuRoot.AddComponent<ModularAvatarMenuInstaller>();
+            }
+            else
+            {
+                menuRoot = Session.Configuration.gameObject;
+                var menuItem = menuRoot.GetOrAddComponent<ModularAvatarMenuItem>();
+                menuItem.Control.type = VRCExpressionsMenu.Control.ControlType.SubMenu;
+                menuItem.MenuSource = SubmenuSource.Children;
+                var menuInstaller = menuRoot.GetOrAddComponent<ModularAvatarMenuInstaller>();
+                menuInstaller.menuToAppend = null;
+            }
 
             foreach(var pass in PluginDefinition.Passes)
             {
