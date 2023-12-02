@@ -35,7 +35,7 @@ namespace gomoru.su.clothfire.ndmf
                 }
                 var obj = target.GetTargetObject(context.AvatarRootObject);
                 var name = target.ToParameterName(context.AvatarRootObject);
-                Session.Parameters.Add(CreateParameter(name, target.DefaultState));
+                Session.Parameters.Add(CreateParameter(name, target.DefaultState, target.ParameterSettings));
                 Session.ParameterDictionary.Add(obj, name);
                 var toggle = treeParent.AddToggle();
                 toggle.ParameterName = name;
@@ -69,9 +69,9 @@ namespace gomoru.su.clothfire.ndmf
             }
         }
 
-        private static AvatarParameter CreateParameter(string name, bool defaultValue)
+        private static AvatarParameter CreateParameter(string name, bool defaultValue, ParameterSettings parameterSettings)
         {
-            return new AvatarParameter() { Name = name, AnimatorParameterType = AnimatorControllerParameterType.Float, ExpressionParameterType = ParameterSyncType.Bool, DefaultValue = defaultValue ? 1 : 0 }; 
+            return new AvatarParameter() { Name = name, AnimatorParameterType = AnimatorControllerParameterType.Float, ExpressionParameterType = ParameterSyncType.Bool, DefaultValue = defaultValue ? 1 : 0, IsLocalOnly = parameterSettings.IsLocal, IsSaved = parameterSettings.IsSave }; 
         }
 
         private (AnimationClip OFF, AnimationClip ON) CreateToggleAnimation(string path, string name)

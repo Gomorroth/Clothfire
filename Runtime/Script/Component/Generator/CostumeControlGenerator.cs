@@ -69,7 +69,7 @@ namespace gomoru.su.clothfire
         {
             foreach(var item in Items.AsSpan())
             {
-                destination.Add(new ControlTarget(this, transform.Find(item.Path).gameObject, item.IsActiveByDefault));
+                destination.Add(new ControlTarget(this, transform.Find(item.Path).gameObject, item.IsActiveByDefault, item.ParameterSettings));
             }
         }
 

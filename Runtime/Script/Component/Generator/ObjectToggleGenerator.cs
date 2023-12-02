@@ -23,7 +23,7 @@ namespace gomoru.su.clothfire
 
         public void GetControlTargets(List<ControlTarget> destination)
         {
-            destination.Add(new ControlTarget(this, TargetObject, TargetObject.activeInHierarchy));
+            destination.Add(new ControlTarget(this, TargetObject, TargetObject.activeInHierarchy, ParameterSettings));
         }
 
 #if UNITY_EDITOR
