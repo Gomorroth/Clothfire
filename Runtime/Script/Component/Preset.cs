@@ -38,7 +38,7 @@ namespace gomoru.su.clothfire
             {
                 x.GetControlTargets(list);
             }
-            Targets.AddRange(list.Where(x => !Targets.Contains(y => x.GetTargetObject(root.gameObject) == y.Target)).Select(x => new PresetItem() { Target = x.GetTargetObject(root.gameObject), Parent = x.Parent, Include = true, Active = gameObject.GetRootObject()?.Find(x.Path)?.activeInHierarchy ?? false }));
+            Targets.AddRange(list.Where(x => !Targets.Contains(y => x.GetTargetObject(root.gameObject) == y.Target)).Select(x => new PresetItem() { Target = x.GetTargetObject(root.gameObject), Parent = x.Parent, Include = false, Active = gameObject.GetRootObject()?.Find(x.Path)?.activeInHierarchy ?? false }));
             this.MarkDirty();
         }
 
