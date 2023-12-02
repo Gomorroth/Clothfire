@@ -7,7 +7,7 @@ using UnityEngine;
 namespace gomoru.su.clothfire
 {
     [ExecuteInEditMode]
-    [AddComponentMenu("Clothfire/Generator/Object Toggle Generator")]
+    [AddComponentMenu("Clothfire/Clothfire Object Toggle")]
     public sealed class ObjectToggle : ClothfireBaseComponent, IControlTargetProvider, IAdditionalControlProvider, IControlGroup
     {
         public string Group;

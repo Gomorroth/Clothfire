@@ -6,7 +6,7 @@ using UnityEngine;
 namespace gomoru.su.clothfire
 {
     [DisallowMultipleComponent]
-    [AddComponentMenu("Clothfire/Generator/Costume Control Generator")]
+    [AddComponentMenu("Clothfire/Clothfire Costume Controller")]
     public sealed class CostumeController : ClothfireBaseComponent, IControlTargetProvider, IAdditionalControlProvider, IControlGroup, IHierarchyChangedCallback
     {
         public int HashCode;
