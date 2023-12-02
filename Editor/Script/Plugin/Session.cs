@@ -13,5 +13,6 @@ namespace gomoru.su.clothfire.ndmf
         public ControlTarget[] ControlTargets;
         public List<AvatarParameter> Parameters = new List<AvatarParameter>();
         public Dictionary<GameObject, string> ParameterDictionary = new Dictionary<GameObject, string>();
+        public Configuration Configuration;
     }
 }

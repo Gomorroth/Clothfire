@@ -13,6 +13,7 @@ namespace gomoru.su.clothfire.ndmf
                 return false;
 
             Session.DirectBlendTree = new DirectBlendTree();
+            Session.Configuration = context.AvatarRootObject.GetComponentInChildren<Configuration>();
 
             return true;
         }
