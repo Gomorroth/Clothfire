@@ -19,6 +19,7 @@ namespace gomoru.su.clothfire
         private ReorderableList _presetList;
 
         private static bool _showToggleByGroup;
+        private static bool _showSyncHierarchy;
 
         internal void OnEnable()
         {
@@ -99,6 +100,7 @@ namespace gomoru.su.clothfire
             EditorGUILayout.LabelField("Utilities", EditorStyles.boldLabel);
 
             ToggleByGroup();
+            SyncHierarchy();
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -112,7 +114,6 @@ namespace gomoru.su.clothfire
                 {
                     bool? include = NullIfDifference(group.Select(x => x.Include));
                     bool? active = NullIfDifference(group.Select(x => x.Active));
-
 
                     var rect = EditorGUILayout.GetControlRect();
                     var checkRect = rect;
@@ -155,6 +156,34 @@ namespace gomoru.su.clothfire
                     }
                     EditorGUI.showMixedValue = false;
                 }
+            }
+            EditorGUILayout.EndFoldoutHeaderGroup();
+        }
+
+        private void SyncHierarchy()
+        {
+            if (_showSyncHierarchy = EditorGUILayout.BeginFoldoutHeaderGroup(_showSyncHierarchy, "Sync Hierarchy"))
+            {
+                bool toHierarchy = GUILayout.Button("Apply to Hierarchy from Preset");
+                bool toPreset = GUILayout.Button("Apply to Preset from Hierarchy");
+
+                if (toHierarchy || toPreset)
+                {
+                    var preset = target as Preset;
+
+                    foreach(ref var x in preset.Targets.AsSpan())
+                    {
+                        if (toHierarchy)
+                        {
+                            x.Target.SetActive(x.Active);
+                        }
+                        else
+                        {
+                            x.Active = x.Target.activeInHierarchy;
+                        }
+                    }
+                }
+
             }
             EditorGUILayout.EndFoldoutHeaderGroup();
         }
