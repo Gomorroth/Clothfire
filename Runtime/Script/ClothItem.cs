@@ -10,7 +10,7 @@ namespace gomoru.su.clothfire
         public string Path;
         public bool IsInclude;
         public bool IsActiveByDefault;
-        public ParameterSettings ParameterSettings;
+        public ParameterSettings ParameterSettings = ParameterSettings.Default;
 
         public List<AdditionalControl> AdditionalControls;
     }
