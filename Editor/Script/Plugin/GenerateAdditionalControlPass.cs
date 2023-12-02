@@ -1,10 +1,11 @@
 ﻿using nadena.dev.ndmf;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace gomoru.su.clothfire.ndmf
 {
@@ -73,9 +74,9 @@ namespace gomoru.su.clothfire.ndmf
                 return false;
 
             if (s_on == null)
-                s_on = GenerateDefaultAnimation(s_off, true);
-            else if (s_on == null)
-                s_off = GenerateDefaultAnimation(s_on, false);
+                s_on = GenerateDefaultAnimation(s_off, control.IsAbsolute ? avatarRootObject : control.Root);
+            else if (s_off == null)
+                s_off = GenerateDefaultAnimation(s_on, control.IsAbsolute ? avatarRootObject : control.Root);
 
             if (!control.IsAbsolute)
             {
@@ -92,7 +93,9 @@ namespace gomoru.su.clothfire.ndmf
 
         private static AnimationClip ResolveAnimationPath(AnimationClip animation, GameObject currentRootObject, GameObject avatarRootObject)
         {
-            var name = $"{animation} (Remapped)";
+            if (animation == null)
+                return null;
+            var name = $"{animation.name} (Remapped)";
             animation = Object.Instantiate(animation);
             animation.name = $"{name}";
 
@@ -126,7 +129,7 @@ namespace gomoru.su.clothfire.ndmf
             return binding;
         }
 
-        private static AnimationClip GenerateDefaultAnimation(AnimationClip source, bool value)
+        private static AnimationClip GenerateDefaultAnimation(AnimationClip source, GameObject rootObject)
         {
             var destination = new AnimationClip();
             AnimationUtility.SetAnimationClipSettings(destination, AnimationUtility.GetAnimationClipSettings(source));
@@ -134,14 +137,27 @@ namespace gomoru.su.clothfire.ndmf
 
             foreach(var binding in AnimationUtility.GetCurveBindings(source))
             {
-                // TODO: 値を変える
+                var obj = rootObject.Find(binding.path);
+                if (obj == null) continue;
 
-                if (AnimationUtility.GetEditorCurve(source, binding) is AnimationCurve editorCurve)
+                if (AnimationUtility.GetEditorCurve(source, binding) is AnimationCurve editorCurve
+                    && AnimationUtility.GetFloatValue(rootObject, binding, out var value))
                 {
+                    var keys = editorCurve.keys;
+                    foreach(ref var key in keys.AsSpan())
+                    {
+                        key.value = value;
+                    }
+                    editorCurve.keys = keys;
                     AnimationUtility.SetEditorCurve(destination, binding, editorCurve);
                 }
-                if (AnimationUtility.GetObjectReferenceCurve(source, binding) is ObjectReferenceKeyframe[] objectKeys)
+                if (AnimationUtility.GetObjectReferenceCurve(source, binding) is ObjectReferenceKeyframe[] objectKeys
+                    && AnimationUtility.GetObjectReferenceValue(rootObject, binding, out var objValue))
                 {
+                    foreach(ref var x in objectKeys.AsSpan())
+                    {
+                        x.value = objValue;
+                    }
                     AnimationUtility.SetObjectReferenceCurve(destination, binding, objectKeys);
                 }
 
@@ -194,7 +210,6 @@ namespace gomoru.su.clothfire.ndmf
             {
                 var blendTree = new BlendTree().AddTo(assetContainer);
                 var root = blendTree;
-                Debug.LogError(string.Join(",", Conditions.Select(x => x.Object?.name ?? "Null")));
                 foreach(var condition in Conditions.SkipLast(1))
                 {
                     blendTree.blendParameter = Session.ParameterDictionary[condition.Object];
