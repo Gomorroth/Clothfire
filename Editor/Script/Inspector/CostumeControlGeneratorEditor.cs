@@ -124,13 +124,22 @@ namespace gomoru.su.clothfire
                 lineRect.width -= 12;
 
                 var checkBoxRect = lineRect;
-                checkBoxRect.width /= 2;
+                checkBoxRect.width /= 4;
                 isInclude.boolValue = EditorGUI.ToggleLeft(checkBoxRect, "Include", isInclude.boolValue);
 
                 EditorGUI.BeginDisabledGroup(!isInclude.boolValue);
 
                 checkBoxRect.x += checkBoxRect.width;
                 isActiveByDefault.boolValue = EditorGUI.ToggleLeft(checkBoxRect, "Active", isActiveByDefault.boolValue);
+
+                var settings = item.FindPropertyRelative(nameof(ClothItem.ParameterSettings));
+                var save = settings.FindPropertyRelative(nameof(ParameterSettings.IsSave));
+                var localOnly = settings.FindPropertyRelative(nameof(ParameterSettings.IsLocal));
+
+                checkBoxRect.x += checkBoxRect.width;
+                save.boolValue = EditorGUI.ToggleLeft(checkBoxRect, "Save", save.boolValue);
+                checkBoxRect.x += checkBoxRect.width;
+                localOnly.boolValue = EditorGUI.ToggleLeft(checkBoxRect, "Local Only", localOnly.boolValue);
 
                 var listRect = lineRect;
                 listRect.y += EditorGUIUtility.singleLineHeight;
