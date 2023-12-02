@@ -54,6 +54,9 @@ namespace gomoru.su.clothfire.ndmf
                         break;
                 }
 
+                if (!succss)
+                    break;
+
                 tree.OFF = off;
                 tree.ON = on;
 
