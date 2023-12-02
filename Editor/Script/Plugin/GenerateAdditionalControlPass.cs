@@ -1,10 +1,11 @@
 ﻿using nadena.dev.ndmf;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace gomoru.su.clothfire.ndmf
 {
@@ -42,7 +43,7 @@ namespace gomoru.su.clothfire.ndmf
                     switch (control.Type)
                     {
                         case AdditionalControl.ControlType.AnimationClip:
-                            succss &= SetAnimationClipAnimaiton(control, off, on);
+                            succss &= SetAnimationClipAnimaiton(control, context.AvatarRootObject, off, on);
                             break;
                         case AdditionalControl.ControlType.Blendshape:
                             succss &= SetBlendshapeAnimation(control, context.AvatarRootObject, off, on);
@@ -62,9 +63,107 @@ namespace gomoru.su.clothfire.ndmf
             return true;
         }
 
-        private bool SetAnimationClipAnimaiton(AdditionalControl control, AnimationClip off, AnimationClip on)
+        private bool SetAnimationClipAnimaiton(AdditionalControl control, GameObject avatarRootObject, AnimationClip off, AnimationClip on)
         {
+            var animation = control.Animation;
+
+            var s_on = animation.ON;
+            var s_off = animation.OFF;
+
+            if (s_on == null && s_off == null)
+                return false;
+
+            if (s_on == null)
+                s_on = GenerateDefaultAnimation(s_off, control.IsAbsolute ? avatarRootObject : control.Root);
+            else if (s_off == null)
+                s_off = GenerateDefaultAnimation(s_on, control.IsAbsolute ? avatarRootObject : control.Root);
+
+            if (!control.IsAbsolute)
+            {
+                s_on = ResolveAnimationPath(s_on, control.Root, avatarRootObject);
+                s_off = ResolveAnimationPath(s_off, control.Root, avatarRootObject);
+            }
+
+
+            EditorUtility.CopySerializedIfDifferent(s_on, off);
+            EditorUtility.CopySerializedIfDifferent(s_off, on);
+            
             return true;
+        }
+
+        private static AnimationClip ResolveAnimationPath(AnimationClip animation, GameObject currentRootObject, GameObject avatarRootObject)
+        {
+            if (animation == null)
+                return null;
+            var name = $"{animation.name} (Remapped)";
+            animation = Object.Instantiate(animation);
+            animation.name = $"{name}";
+
+            var bindings = AnimationUtility.GetCurveBindings(animation)
+                .Select(x => (Binding: x, RemappedBinding: RemapBinding(x, currentRootObject, avatarRootObject), Editor:AnimationUtility.GetEditorCurve(animation, x), Object: AnimationUtility.GetObjectReferenceCurve(animation, x)))
+                ;
+
+            foreach(var x in bindings)
+            {
+                if (x.Editor != null)
+                {
+                    AnimationUtility.SetEditorCurve(animation, x.Binding, null);
+                    AnimationUtility.SetEditorCurve(animation, x.RemappedBinding, x.Editor);
+                }
+                if (x.Object != null)
+                {
+                    AnimationUtility.SetObjectReferenceCurve(animation, x.Binding, null);
+                    AnimationUtility.SetObjectReferenceCurve(animation, x.RemappedBinding, x.Object);
+                }
+            }
+                
+            return animation;
+        }
+
+        private static EditorCurveBinding RemapBinding(EditorCurveBinding binding, GameObject currentRootObject, GameObject avatarRootObject)
+        {
+            var obj = currentRootObject.Find(binding.path);
+            if (obj == null)
+                return binding;
+            binding.path = obj.GetRelativePath(avatarRootObject);
+            return binding;
+        }
+
+        private static AnimationClip GenerateDefaultAnimation(AnimationClip source, GameObject rootObject)
+        {
+            var destination = new AnimationClip();
+            AnimationUtility.SetAnimationClipSettings(destination, AnimationUtility.GetAnimationClipSettings(source));
+            destination.name = $"{source.name} (Default)";
+
+            foreach(var binding in AnimationUtility.GetCurveBindings(source))
+            {
+                var obj = rootObject.Find(binding.path);
+                if (obj == null) continue;
+
+                if (AnimationUtility.GetEditorCurve(source, binding) is AnimationCurve editorCurve
+                    && AnimationUtility.GetFloatValue(rootObject, binding, out var value))
+                {
+                    var keys = editorCurve.keys;
+                    foreach(ref var key in keys.AsSpan())
+                    {
+                        key.value = value;
+                    }
+                    editorCurve.keys = keys;
+                    AnimationUtility.SetEditorCurve(destination, binding, editorCurve);
+                }
+                if (AnimationUtility.GetObjectReferenceCurve(source, binding) is ObjectReferenceKeyframe[] objectKeys
+                    && AnimationUtility.GetObjectReferenceValue(rootObject, binding, out var objValue))
+                {
+                    foreach(ref var x in objectKeys.AsSpan())
+                    {
+                        x.value = objValue;
+                    }
+                    AnimationUtility.SetObjectReferenceCurve(destination, binding, objectKeys);
+                }
+
+            }
+
+            return destination;
         }
 
         private bool SetBlendshapeAnimation(AdditionalControl control, GameObject avatarRootObject, AnimationClip off, AnimationClip on)
@@ -111,7 +210,6 @@ namespace gomoru.su.clothfire.ndmf
             {
                 var blendTree = new BlendTree().AddTo(assetContainer);
                 var root = blendTree;
-                Debug.LogError(string.Join(",", Conditions.Select(x => x.Object?.name ?? "Null")));
                 foreach(var condition in Conditions.SkipLast(1))
                 {
                     blendTree.blendParameter = Session.ParameterDictionary[condition.Object];
