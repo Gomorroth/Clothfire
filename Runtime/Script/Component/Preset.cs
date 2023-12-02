@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 
 namespace gomoru.su.clothfire
 {
-    [AddComponentMenu("Clothfire/Preset")]
+    [AddComponentMenu("Clothfire/Clothfire Preset")]
     public sealed class Preset : ClothfireBaseComponent, IHierarchyChangedCallback
     {
         public List<PresetItem> Targets = new List<PresetItem>();
