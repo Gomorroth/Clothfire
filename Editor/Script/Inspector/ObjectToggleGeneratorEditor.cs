@@ -9,14 +9,14 @@ using UnityEngine;
 
 namespace gomoru.su.clothfire
 {
-    [CustomEditor(typeof(ObjectToggleGenerator))]
+    [CustomEditor(typeof(ObjectToggle))]
     internal sealed class ObjectToggleGeneratorEditor : Editor
     {
         private ReorderableList _additionalControlList;
 
         public void OnEnable()
         {
-            _additionalControlList = new ReorderableList(serializedObject, serializedObject.FindProperty(nameof(ObjectToggleGenerator.AdditionalControls)))
+            _additionalControlList = new ReorderableList(serializedObject, serializedObject.FindProperty(nameof(ObjectToggle.AdditionalControls)))
             {
                 displayAdd = true,
                 displayRemove = true,
@@ -29,10 +29,10 @@ namespace gomoru.su.clothfire
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ObjectToggleGenerator.IsActiveByDefault)));
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ObjectToggleGenerator.ParameterSettings)).FindPropertyRelative(nameof(ParameterSettings.IsSave)), "Save Parameter".ToGUIContent());
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ObjectToggleGenerator.ParameterSettings)).FindPropertyRelative(nameof(ParameterSettings.IsLocal)), "Local Only".ToGUIContent());
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ObjectToggleGenerator.Group)));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ObjectToggle.IsActiveByDefault)));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ObjectToggle.ParameterSettings)).FindPropertyRelative(nameof(ParameterSettings.IsSave)), "Save Parameter".ToGUIContent());
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ObjectToggle.ParameterSettings)).FindPropertyRelative(nameof(ParameterSettings.IsLocal)), "Local Only".ToGUIContent());
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ObjectToggle.Group)));
             _additionalControlList.DoLayoutList();
             serializedObject.ApplyModifiedProperties();
         }

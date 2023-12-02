@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace gomoru.su.clothfire
 {
-    [AddComponentMenu("Clothfire/Conditional Controller")]
+    [AddComponentMenu("Clothfire/Clothfire Conditional Controller")]
     public sealed class ConditionalController : ClothfireBaseComponent, IAdditionalControlProvider
     {
         public List<Condition> Conditions;
