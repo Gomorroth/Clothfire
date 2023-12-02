@@ -12,6 +12,7 @@ namespace gomoru.su.clothfire
     {
         public string Group;
         public bool IsActiveByDefault;
+        public ParameterSettings ParameterSettings;
         public List<AdditionalControl> AdditionalControls = new List<AdditionalControl>();
 
         public string GroupName => Group;
