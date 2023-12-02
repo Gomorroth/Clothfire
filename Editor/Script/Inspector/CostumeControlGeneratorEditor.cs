@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace gomoru.su.clothfire
 {
-    [CustomEditor(typeof(CostumeControlGenerator))]
+    [CustomEditor(typeof(CostumeController))]
     internal sealed class CostumeControlGeneratorEditor : Editor
     {
         private ReorderableList _itemList;
@@ -21,13 +21,13 @@ namespace gomoru.su.clothfire
         {
             foreach(var target in targets)
             {
-                if (target is CostumeControlGenerator ccg)
+                if (target is CostumeController ccg)
                     ccg.TryRefleshItems();
             }
 
             _additionalControlLists = new Dictionary<int, ReorderableList>();
 
-            _itemsProperty = serializedObject.FindProperty(nameof(CostumeControlGenerator.Items));
+            _itemsProperty = serializedObject.FindProperty(nameof(CostumeController.Items));
             _itemList = new ReorderableList(serializedObject, _itemsProperty)
             {
                 displayAdd = false,
@@ -89,7 +89,7 @@ namespace gomoru.su.clothfire
             var path = item.FindPropertyRelative(nameof(ClothItem.Path)).stringValue;
             var isInclude = item.FindPropertyRelative(nameof(ClothItem.IsInclude));
             var isActiveByDefault = item.FindPropertyRelative(nameof(ClothItem.IsActiveByDefault));
-            var obj = (target as CostumeControlGenerator).gameObject;
+            var obj = (target as CostumeController).gameObject;
             var renderer = obj.transform.Find(path)?.GetComponent<Renderer>();
             if (renderer == null)
             {
@@ -176,7 +176,7 @@ namespace gomoru.su.clothfire
         [MenuItem("CONTEXT/CostumeControlGenerator/Sort Items")]
         public static void SortItems(MenuCommand command)
         {
-            var generator = command.context as CostumeControlGenerator;
+            var generator = command.context as CostumeController;
             var obj = generator.gameObject.GetRootObject();
             generator.Items.Sort((x, y) => obj.Find(x.Path).transform.GetSiblingIndex() - obj.Find(y.Path).transform.GetSiblingIndex());
             generator.MarkDirty();

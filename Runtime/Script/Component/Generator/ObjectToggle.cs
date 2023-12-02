@@ -8,7 +8,7 @@ namespace gomoru.su.clothfire
 {
     [ExecuteInEditMode]
     [AddComponentMenu("Clothfire/Generator/Object Toggle Generator")]
-    public sealed class ObjectToggleGenerator : ClothfireBaseComponent, IControlTargetProvider, IAdditionalControlProvider, IControlGroup
+    public sealed class ObjectToggle : ClothfireBaseComponent, IControlTargetProvider, IAdditionalControlProvider, IControlGroup
     {
         public string Group;
         public bool IsActiveByDefault;
