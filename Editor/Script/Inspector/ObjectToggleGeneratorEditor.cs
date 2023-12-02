@@ -30,6 +30,8 @@ namespace gomoru.su.clothfire
         {
             serializedObject.Update();
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ObjectToggleGenerator.IsActiveByDefault)));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ObjectToggleGenerator.ParameterSettings)).FindPropertyRelative(nameof(ParameterSettings.IsSave)), "Save Parameter".ToGUIContent());
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ObjectToggleGenerator.ParameterSettings)).FindPropertyRelative(nameof(ParameterSettings.IsLocal)), "Local Only".ToGUIContent());
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(ObjectToggleGenerator.Group)));
             _additionalControlList.DoLayoutList();
             serializedObject.ApplyModifiedProperties();

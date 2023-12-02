@@ -25,12 +25,14 @@ namespace gomoru.su.clothfire
         public Object Parent;
         public string Path;
         public bool DefaultState;
+        public ParameterSettings ParameterSettings;
 
-        public ControlTarget(Object parent, GameObject obj, bool defaultState)
+        public ControlTarget(Object parent, GameObject obj, bool defaultState, ParameterSettings parameterSettings)
         {
             Parent = parent;
             Path = obj.GetRelativePath(obj.GetComponentInParent<VRCAvatarDescriptor>().gameObject);
             DefaultState = defaultState;
+            ParameterSettings = parameterSettings;
         }
 
         public string ToParameterName(GameObject avatarRootObject)
