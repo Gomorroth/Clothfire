@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace gomoru.su.clothfire
 {
-    internal static class Utils
+    internal static partial class Utils
     {
         public static TValue GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> valueFactory)
         {
