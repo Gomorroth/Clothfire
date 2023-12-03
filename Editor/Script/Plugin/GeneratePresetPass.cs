@@ -1,4 +1,4 @@
-using nadena.dev.modular_avatar.core;
+﻿using nadena.dev.modular_avatar.core;
 using nadena.dev.ndmf;
 using System;
 using System.Collections.Generic;
@@ -45,7 +45,12 @@ namespace gomoru.su.clothfire.ndmf
 
             foreach(var (preset, i) in presets.Select(Tuple.Create<Preset, int>))
             {
-                var state = stateMachine.AddState(preset.name);
+                var name = preset.name;
+                if (!string.IsNullOrEmpty(preset.Group))
+                {
+                    name = $"{preset.Group} {name}";
+                }
+                var state = stateMachine.AddState(name);
                 state.motion = blank;
                 var driver = state.AddStateMachineBehaviour<VRCAvatarParameterDriver>();
                 foreach(var target in preset.Targets.AsSpan())
@@ -76,12 +81,14 @@ namespace gomoru.su.clothfire.ndmf
         {
             foreach(var group in ControlTarget.GetControlTargetsAsList(avatarRootObject).Where(x => x.Parent is IControlGroup group && !string.IsNullOrEmpty(group.GroupName)).GroupBy(x => (x.Parent as IControlGroup)?.GroupName ?? string.Empty).OrderBy(x => x.Key))
             {
-                var on = new GameObject($"{group.Key} ON");
-                var off  = new GameObject($"{group.Key} OFF");
+                var on = new GameObject($"ON");
+                var off  = new GameObject($"OFF");
                 on.transform.parent = avatarRootObject.transform;
                 off.transform.parent = avatarRootObject.transform;
                 var on_preset = on.AddComponent<Preset>();
                 var off_preset = off.AddComponent<Preset>();
+                on_preset.Group = group.Key;
+                off_preset.Group = group.Key;
                 foreach (var x in group)
                 {
                     var item = new Preset.PresetItem()
