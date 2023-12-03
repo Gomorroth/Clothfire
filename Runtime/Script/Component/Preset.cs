@@ -32,10 +32,15 @@ namespace gomoru.su.clothfire
 
         public void RefleshItems()
         {
+            Func<PresetItem, bool> removeCondition = x => x.Target == null || x.Target.CompareTag("EditorOnly");
+            if (Targets.Count(removeCondition) != 0)
+            {
+                RuntimeUtils.RecordObject(this, "Reflesh Items");
+                Targets.RemoveAll(new Predicate<PresetItem>(removeCondition));
+            }
             var root = GetComponentInParent<VRCAvatarDescriptor>();
             var list = ControlTarget.SharedList;
             list.Clear();
-            Targets.RemoveAll(x => x.Target == null || x.Target.CompareTag("EditorOnly"));
             foreach (var x in root.GetComponentsInChildren<IControlTargetProvider>())
             {
                 if ((x as Component).CompareTag("EditorOnly"))

@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -36,6 +32,13 @@ namespace gomoru.su.clothfire
         {
 #if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(obj);
+#endif
+        }
+
+        public static void RecordObject(Object obj, string name)
+        {
+#if UNITY_EDITOR
+            UnityEditor.Undo.RegisterCompleteObjectUndo(obj, name);
 #endif
         }
 
