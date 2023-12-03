@@ -94,6 +94,8 @@ namespace gomoru.su.clothfire
         {
             serializedObject.Update();
 
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(Preset.Group)));
+
             _presetList.DoLayoutList();
 
             EditorGUILayout.Space(4);

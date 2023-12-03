@@ -45,7 +45,12 @@ namespace gomoru.su.clothfire.ndmf
 
             foreach(var (preset, i) in presets.Select(Tuple.Create<Preset, int>))
             {
-                var state = stateMachine.AddState(preset.name);
+                var name = preset.name;
+                if (!string.IsNullOrEmpty(preset.Group))
+                {
+                    name = $"{preset.Group} {name}";
+                }
+                var state = stateMachine.AddState(name);
                 state.motion = blank;
                 var driver = state.AddStateMachineBehaviour<VRCAvatarParameterDriver>();
                 foreach(var target in preset.Targets.AsSpan())
@@ -76,17 +81,19 @@ namespace gomoru.su.clothfire.ndmf
         {
             foreach(var group in ControlTarget.GetControlTargetsAsList(avatarRootObject).Where(x => x.Parent is IControlGroup group && !string.IsNullOrEmpty(group.GroupName)).GroupBy(x => (x.Parent as IControlGroup)?.GroupName ?? string.Empty).OrderBy(x => x.Key))
             {
-                var on = new GameObject($"{group.Key} ON");
-                var off  = new GameObject($"{group.Key} OFF");
+                var on = new GameObject($"ON");
+                var off  = new GameObject($"OFF");
                 on.transform.parent = avatarRootObject.transform;
                 off.transform.parent = avatarRootObject.transform;
                 var on_preset = on.AddComponent<Preset>();
                 var off_preset = off.AddComponent<Preset>();
+                on_preset.Group = group.Key;
+                off_preset.Group = group.Key;
                 foreach (var x in group)
                 {
                     var item = new Preset.PresetItem()
                     {
-                        Active = x.DefaultState,
+                        Active = true,
                         Include = true,
                         Target = avatarRootObject.Find(x.Path),
                         Parent = x.Parent,
@@ -108,11 +115,24 @@ namespace gomoru.su.clothfire.ndmf
             menuRoot.transform.parent = menu.transform;
             menuRoot.transform.SetSiblingIndex(0);
 
+            var dict = new Dictionary<string, GameObject>();
+
             foreach (var (preset, i) in _presets.Select(Tuple.Create<Preset, int>))
             {
+                var menuParent = menuRoot;
+                if (!string.IsNullOrEmpty(preset.Group))
+                {
+                    menuParent = dict.GetOrAdd(preset.Group, x =>
+                    {
+                        var m = CreateSubMenu();
+                        m.name = x;
+                        m.transform.parent = menuRoot.transform;
+                        return m;
+                    });
+                }
                 var button = CreateMenuButton(PresetParameterName, i + 1);
                 button.name = preset.name;
-                button.transform.parent = menuRoot.transform;
+                button.transform.parent = menuParent.transform;
             }
         }
     }
