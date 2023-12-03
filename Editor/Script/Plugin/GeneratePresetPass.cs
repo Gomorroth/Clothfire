@@ -19,6 +19,11 @@ namespace gomoru.su.clothfire.ndmf
 
         protected override bool Run(BuildContext context)
         {
+            if (Session.Configuration.GenerateGroupTogglePreset)
+            {
+                GenerateGroupTogglePreset(context.AvatarRootObject);
+            }
+
             var presets = _presets = context.AvatarRootObject.GetComponentsInChildren<Preset>();
             if (presets?.Length == 0)
               return true;
@@ -65,6 +70,32 @@ namespace gomoru.su.clothfire.ndmf
             Session.Parameters.Add(new AvatarParameter() { Name = PresetParameterName, AnimatorParameterType = AnimatorControllerParameterType.Int, ExpressionParameterType = ParameterSyncType.Int, IsLocalOnly = true });
 
             return true;
+        }
+
+        private void GenerateGroupTogglePreset(GameObject avatarRootObject)
+        {
+            foreach(var group in ControlTarget.GetControlTargetsAsList(avatarRootObject).Where(x => x.Parent is IControlGroup group && !string.IsNullOrEmpty(group.GroupName)).GroupBy(x => (x.Parent as IControlGroup)?.GroupName ?? string.Empty).OrderBy(x => x.Key))
+            {
+                var on = new GameObject($"{group.Key} ON");
+                var off  = new GameObject($"{group.Key} OFF");
+                on.transform.parent = avatarRootObject.transform;
+                off.transform.parent = avatarRootObject.transform;
+                var on_preset = on.AddComponent<Preset>();
+                var off_preset = off.AddComponent<Preset>();
+                foreach (var x in group)
+                {
+                    var item = new Preset.PresetItem()
+                    {
+                        Active = x.DefaultState,
+                        Include = true,
+                        Target = avatarRootObject.Find(x.Path),
+                        Parent = x.Parent,
+                    };
+                    on_preset.Targets.Add(item);
+                    item.Active = false;
+                    off_preset.Targets.Add(item);
+                }
+            }
         }
 
         protected override void OnCreateMenu(BuildContext context, GameObject menu)
