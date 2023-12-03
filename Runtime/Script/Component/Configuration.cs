@@ -6,6 +6,6 @@ namespace gomoru.su.clothfire
     [AddComponentMenu("")]
     public sealed class Configuration : ClothfireBaseComponent
     {
-
+        public bool GenerateGroupTogglePreset;
     }
 }
