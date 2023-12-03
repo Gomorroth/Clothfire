@@ -17,6 +17,9 @@ namespace gomoru.su.clothfire
             list.Clear();
             foreach(var x in root.GetComponentsInChildren<IControlTargetProvider>())
             {
+                if ((x as Component).CompareTag("EditorOnly"))
+                    continue;
+
                 x.GetControlTargets(list);
             }
             return list.AsSpan();
