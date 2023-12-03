@@ -45,7 +45,7 @@ namespace gomoru.su.clothfire.ndmf
 
             foreach(var (preset, i) in presets.Select(Tuple.Create<Preset, int>))
             {
-                var name = preset.name;
+                var name = preset.PresetName;
                 if (!string.IsNullOrEmpty(preset.Group))
                 {
                     name = $"{preset.Group} {name}";

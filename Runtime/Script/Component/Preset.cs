@@ -10,6 +10,7 @@ namespace gomoru.su.clothfire
     [AddComponentMenu("Clothfire/Clothfire Preset")]
     public sealed class Preset : ClothfireBaseComponent, IHierarchyChangedCallback
     {
+        public string PresetName;
         public string Group;
         public List<PresetItem> Targets = new List<PresetItem>();
         public int HashCode;

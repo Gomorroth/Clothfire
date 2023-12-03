@@ -30,6 +30,11 @@ namespace gomoru.su.clothfire
 
             preset.TryRefleshItems();
 
+            if (string.IsNullOrEmpty(preset.PresetName))
+            {
+                preset.PresetName = preset.name;
+            }
+
             _presetList = new ReorderableList(serializedObject, serializedObject.FindProperty(nameof(Preset.Targets)))
             {
                 displayAdd = false,
@@ -94,6 +99,7 @@ namespace gomoru.su.clothfire
         {
             serializedObject.Update();
 
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(Preset.PresetName)), "Name".ToGUIContent());
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(Preset.Group)));
 
             _presetList.DoLayoutList();
