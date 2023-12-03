@@ -7,7 +7,7 @@ using UnityEngine;
 namespace gomoru.su.clothfire
 {
     [CustomEditor(typeof(CostumeController))]
-    internal sealed class CostumeControlGeneratorEditor : Editor
+    internal sealed class CostumeControllerEditor : Editor
     {
         private ReorderableList _itemList;
         private ReorderableList _additionalControlList;
@@ -173,7 +173,7 @@ namespace gomoru.su.clothfire
             }
         }
 
-        [MenuItem("CONTEXT/CostumeControlGenerator/Sort Items")]
+        [MenuItem("CONTEXT/CostumeController/Sort Items")]
         public static void SortItems(MenuCommand command)
         {
             var generator = command.context as CostumeController;
