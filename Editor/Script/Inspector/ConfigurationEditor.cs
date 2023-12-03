@@ -26,6 +26,16 @@ namespace gomoru.su.clothfire
             }
             EditorGUILayout.LabelField("The included MA Menu Intaller allows you to change the menu generation destination.".ToGUIContent(image: _infoIcon), _style);
             EditorGUILayout.LabelField("The name of the menu generated can be changed by renaming the attached MA Menu Item.".ToGUIContent(image: _infoIcon), _style);
+
+            EditorGUILayout.Separator();
+
+            serializedObject.Update();
+
+            EditorGUILayout.LabelField("Options", EditorStyles.boldLabel);
+
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(Configuration.GenerateGroupTogglePreset)));
+
+            serializedObject.ApplyModifiedProperties();
         }
 
     }
