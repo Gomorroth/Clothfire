@@ -108,11 +108,24 @@ namespace gomoru.su.clothfire.ndmf
             menuRoot.transform.parent = menu.transform;
             menuRoot.transform.SetSiblingIndex(0);
 
+            var dict = new Dictionary<string, GameObject>();
+
             foreach (var (preset, i) in _presets.Select(Tuple.Create<Preset, int>))
             {
+                var menuParent = menuRoot;
+                if (!string.IsNullOrEmpty(preset.Group))
+                {
+                    menuParent = dict.GetOrAdd(preset.Group, x =>
+                    {
+                        var m = CreateSubMenu();
+                        m.name = x;
+                        m.transform.parent = menuRoot.transform;
+                        return m;
+                    });
+                }
                 var button = CreateMenuButton(PresetParameterName, i + 1);
                 button.name = preset.name;
-                button.transform.parent = menuRoot.transform;
+                button.transform.parent = menuParent.transform;
             }
         }
     }
