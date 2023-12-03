@@ -30,6 +30,12 @@ namespace gomoru.su.clothfire
 
         public void RefleshItems()
         {
+            Func<ClothItem, bool> condition = x => !(gameObject.Find(x.Path) is GameObject obj) || obj.CompareTag("EditorOnly");
+            if (Items.Count(condition) != 0)
+            {
+                RuntimeUtils.RecordObject(this, "Reflesh Items");
+                Items.RemoveAll(x => !(gameObject.Find(x.Path) is GameObject obj) || obj.CompareTag("EditorOnly"));
+            }
             var components = gameObject.GetChildrenComponents<Renderer>(true);
             {
                 foreach (var renderer in components.Span)
@@ -48,7 +54,6 @@ namespace gomoru.su.clothfire
                 }
             }
             components.Dispose();
-            Items.RemoveAll(x => !(gameObject.Find(x.Path) is GameObject obj) || obj.CompareTag("EditorOnly"));
             this.MarkDirty();
         }
 
@@ -75,7 +80,10 @@ namespace gomoru.su.clothfire
         {
             foreach(var item in Items.AsSpan())
             {
-                destination.Add(new ControlTarget(this, transform.Find(item.Path).gameObject, item.IsActiveByDefault, item.ParameterSettings));
+                var obj = transform.Find(item.Path);
+                if (obj == null)
+                    continue;
+                destination.Add(new ControlTarget(this, obj.gameObject, item.IsActiveByDefault, item.ParameterSettings));
             }
         }
 
