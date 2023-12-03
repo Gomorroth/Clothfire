@@ -13,16 +13,21 @@ namespace gomoru.su.clothfire
 
         public static ReadOnlySpan<ControlTarget> GetControlTargets(GameObject root)
         {
+            return GetControlTargetsAsList(root).AsSpan();
+        }
+
+        internal static List<ControlTarget> GetControlTargetsAsList(GameObject root)
+        {
             var list = SharedList;
             list.Clear();
-            foreach(var x in root.GetComponentsInChildren<IControlTargetProvider>())
+            foreach (var x in root.GetComponentsInChildren<IControlTargetProvider>())
             {
                 if ((x as Component).CompareTag("EditorOnly"))
                     continue;
 
                 x.GetControlTargets(list);
             }
-            return list.AsSpan();
+            return list;
         }
 
         public Object Parent;
