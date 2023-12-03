@@ -69,6 +69,9 @@ namespace gomoru.su.clothfire.ndmf
 
         protected override void OnCreateMenu(BuildContext context, GameObject menu)
         {
+            if ((_presets?.Length ?? 0) == 0)
+                return;
+
             var menuRoot = CreateSubMenu();
             menuRoot.name = "Preset";
             menuRoot.transform.parent = menu.transform;
