@@ -34,6 +34,9 @@ namespace gomoru.su.clothfire
             {
                 foreach (var renderer in components.Span)
                 {
+                    if (renderer.gameObject.CompareTag("EditorOnly"))
+                        continue;
+
                     if (renderer is MeshRenderer || renderer is SkinnedMeshRenderer)
                     {
                         var path = renderer.gameObject.GetRelativePath(gameObject);
@@ -45,7 +48,7 @@ namespace gomoru.su.clothfire
                 }
             }
             components.Dispose();
-            Items.RemoveAll(x => gameObject.transform.Find(x.Path) == null);
+            Items.RemoveAll(x => !(gameObject.Find(x.Path) is GameObject obj) || obj.CompareTag("EditorOnly"));
             this.MarkDirty();
         }
 
@@ -57,7 +60,10 @@ namespace gomoru.su.clothfire
                 foreach (var renderer in components.Span)
                 {
                     if (renderer is MeshRenderer || renderer is SkinnedMeshRenderer)
+                    {
                         hashCode = hashCode.Append(renderer.gameObject.GetRelativePath(root));
+                        hashCode = hashCode.Append(renderer.gameObject.CompareTag("EditorOnly"));
+                    }
                 }
             }
             components.Dispose();

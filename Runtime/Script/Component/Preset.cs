@@ -33,9 +33,12 @@ namespace gomoru.su.clothfire
             var root = GetComponentInParent<VRCAvatarDescriptor>();
             var list = ControlTarget.SharedList;
             list.Clear();
-            Targets.RemoveAll(x => x.Target == null);
+            Targets.RemoveAll(x => x.Target == null || x.Target.CompareTag("EditorOnly"));
             foreach (var x in root.GetComponentsInChildren<IControlTargetProvider>())
             {
+                if ((x as Component).CompareTag("EditorOnly"))
+                    continue;
+
                 x.GetControlTargets(list);
             }
             Targets.AddRange(list.Where(x => !Targets.Contains(y => x.GetTargetObject(root.gameObject) == y.Target)).Select(x => new PresetItem() { Target = x.GetTargetObject(root.gameObject), Parent = x.Parent, Include = false, Active = gameObject.GetRootObject()?.Find(x.Path)?.activeInHierarchy ?? false }));
@@ -45,15 +48,10 @@ namespace gomoru.su.clothfire
         public static int GetHierarchyHashCode(GameObject avatarRootObject)
         {
             var hash = new HashCode();
-            var list = ControlTarget.SharedList;
-            list.Clear();
-            foreach(var x in avatarRootObject.GetComponentsInChildren<IControlTargetProvider>())
-            {
-                x.GetControlTargets(list);
-            }
-            foreach(var item in list.AsSpan())
+            foreach(var item in ControlTarget.GetControlTargets(avatarRootObject))
             {
                 hash = hash.Append(item.Path.GetHashCode());
+                hash = hash.Append(avatarRootObject.Find(item.Path)?.CompareTag("EditorOnly"));
             }
             return hash.GetHashCode();
         }
