@@ -1,4 +1,4 @@
-﻿using nadena.dev.modular_avatar.core;
+using nadena.dev.modular_avatar.core;
 using nadena.dev.ndmf;
 using System;
 using System.Collections.Generic;
@@ -86,7 +86,7 @@ namespace gomoru.su.clothfire.ndmf
                 {
                     var item = new Preset.PresetItem()
                     {
-                        Active = x.DefaultState,
+                        Active = true,
                         Include = true,
                         Target = avatarRootObject.Find(x.Path),
                         Parent = x.Parent,
