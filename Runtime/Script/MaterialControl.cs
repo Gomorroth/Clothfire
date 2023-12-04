@@ -6,7 +6,8 @@ namespace gomoru.su.clothfire
     [Serializable]
     public sealed class MaterialControl
     {
-        public Renderer Target;
+        public string Path;
+        public int Index;
         public Material OFF;
         public Material ON;
         public bool IsChangeOFF = true;

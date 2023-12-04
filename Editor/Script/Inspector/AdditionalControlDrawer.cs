@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using static PlasticGui.PlasticTableColumn;
+using Object = UnityEngine.Object;
 
 namespace gomoru.su.clothfire
 {
@@ -194,7 +197,82 @@ namespace gomoru.su.clothfire
 
         private void DrawMaterialControl(Rect position, SerializedProperty property, SerializedProperty isAbsolute)
         {
+            var control = property.FindPropertyRelative(nameof(AdditionalControl.Material));
+            var path = control.FindPropertyRelative(nameof(MaterialControl.Path));
 
+            var root = (property.serializedObject.targetObject as Component).transform;
+            if (isAbsolute.boolValue)
+                root = nadena.dev.ndmf.runtime.RuntimeUtil.FindAvatarInParents(root.transform);
+
+            var renderer = root.transform.Find(path.stringValue)?.GetComponent<Renderer>();
+
+            var fieldRect = position;
+            var idxRect = fieldRect;
+            fieldRect.width *= 0.8f;
+            idxRect.x += fieldRect.width + 2;
+            idxRect.width -= fieldRect.width + 2;
+
+            if (!string.IsNullOrEmpty(path.stringValue) && renderer == null)
+            {
+                EditorGUI.PropertyField(fieldRect, path, GUIContent.none);
+            }
+            else
+            {
+                EditorGUI.BeginChangeCheck();
+                renderer = EditorGUI.ObjectField(fieldRect, GUIContent.none, renderer, typeof(Renderer), true) as Renderer;
+                if (EditorGUI.EndChangeCheck())
+                {
+                    var objPath = renderer.gameObject.GetRelativePath(root.gameObject);
+                    if (objPath == null) // Not found
+                    {
+                        if (!isAbsolute.boolValue)
+                        {
+                            var avatarRoot = nadena.dev.ndmf.runtime.RuntimeUtil.FindAvatarInParents(root.transform);
+                            objPath = renderer.gameObject.GetRelativePath(avatarRoot.gameObject);
+                            if (objPath != null) // Found in avatar
+                            {
+                                isAbsolute.boolValue = true;
+                                path.stringValue = objPath;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        path.stringValue = objPath;
+                    }
+                }
+            }
+
+            EditorGUI.PropertyField(idxRect, control.FindPropertyRelative(nameof(MaterialControl.Index)), GUIContent.none);
+
+            var on = control.FindPropertyRelative(nameof(MaterialControl.ON));
+            var off = control.FindPropertyRelative(nameof(MaterialControl.OFF));
+            var changeOff = control.FindPropertyRelative(nameof(MaterialControl.IsChangeOFF));
+            var changeOn = control.FindPropertyRelative(nameof(MaterialControl.IsChangeON));
+
+            position.y += EditorGUIUtility.singleLineHeight + 4;
+            var r1 = position;
+            var r2 = position;
+            var r3 = position;
+            r1.width = EditorStyles.label.CalcSize("OFF:".ToGUIContent()).x;
+            r2.width = EditorStyles.toggle.CalcSize(GUIUtils.GetTempContent("")).x;
+            r3.width -= r2.width + 8 + r1.width + 8;
+            r2.x += r1.width + 8;
+            r3.x += r1.width + 8 + r2.width + 8;
+            EditorGUI.LabelField(r1, "OFF");
+            GUIUtils.ToggleLeft(r2, changeOff, GUIContent.none);
+            EditorGUI.BeginDisabledGroup(!changeOff.boolValue);
+            EditorGUI.PropertyField(r3, off, GUIContent.none);
+            EditorGUI.EndDisabledGroup();
+
+            r1.y += EditorGUIUtility.singleLineHeight + 4;
+            r2.y += EditorGUIUtility.singleLineHeight + 4;
+            r3.y += EditorGUIUtility.singleLineHeight + 4;
+            EditorGUI.LabelField(r1, "ON");
+            GUIUtils.ToggleLeft(r2, changeOn, GUIContent.none);
+            EditorGUI.BeginDisabledGroup(!changeOn.boolValue);
+            EditorGUI.PropertyField(r3, on, GUIContent.none);
+            EditorGUI.EndDisabledGroup();
         }
     }
 }
