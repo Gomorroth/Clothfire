@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-using static PlasticGui.PlasticTableColumn;
 using Object = UnityEngine.Object;
 
 namespace gomoru.su.clothfire
