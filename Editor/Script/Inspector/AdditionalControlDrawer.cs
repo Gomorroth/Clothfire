@@ -122,7 +122,7 @@ namespace gomoru.su.clothfire
                     r3.x += r1.width + 8 + r2.width + 8;
                     EditorGUI.LabelField(r1, "OFF");
                     var check = control.FindPropertyRelative(nameof(BlendshapeControl.IsChangeOFF));
-                    check.boolValue = EditorGUI.ToggleLeft(r2, GUIContent.none, check.boolValue);
+                    GUIUtils.ToggleLeft(r2, check, GUIContent.none);
                     EditorGUI.BeginDisabledGroup(!check.boolValue);
                     EditorGUI.PropertyField(r3, control.FindPropertyRelative(nameof(BlendshapeControl.OFF)), GUIContent.none);
                     EditorGUI.EndDisabledGroup();
@@ -132,7 +132,7 @@ namespace gomoru.su.clothfire
                     r3.y += EditorGUIUtility.singleLineHeight + 4;
                     EditorGUI.LabelField(r1, "ON");
                     check = control.FindPropertyRelative(nameof(BlendshapeControl.IsChangeON));
-                    check.boolValue = EditorGUI.ToggleLeft(r2, GUIContent.none, check.boolValue);
+                    GUIUtils.ToggleLeft(r2, check, GUIContent.none);
                     EditorGUI.BeginDisabledGroup(!check.boolValue);
                     EditorGUI.PropertyField(r3, control.FindPropertyRelative(nameof(BlendshapeControl.ON)), GUIContent.none);
                     EditorGUI.EndDisabledGroup();
@@ -142,7 +142,7 @@ namespace gomoru.su.clothfire
                     position.y += EditorGUIUtility.singleLineHeight + 4;
                     var control = property.FindPropertyRelative(nameof(AdditionalControl.Animation));
                     var isMotionTimed = control.FindPropertyRelative(nameof(AnimationControl.IsMotionTimed));
-                    isMotionTimed.boolValue = EditorGUI.ToggleLeft(position, "Using motion time", isMotionTimed.boolValue);
+                    GUIUtils.ToggleLeft(position, isMotionTimed, "Using motion time".ToGUIContent());
 
                     var on = control.FindPropertyRelative(nameof(AnimationControl.ON));
                     var off = control.FindPropertyRelative(nameof(AnimationControl.OFF));
@@ -166,7 +166,7 @@ namespace gomoru.su.clothfire
                         r2.x += r1.width + 8;
                         r3.x += r1.width + 8 + r2.width + 8;
                         EditorGUI.LabelField(r1, "OFF");
-                        changeOff.boolValue = EditorGUI.ToggleLeft(r2, GUIContent.none, changeOff.boolValue);
+                        GUIUtils.ToggleLeft(r2, changeOff, GUIContent.none);
                         EditorGUI.BeginDisabledGroup(!changeOff.boolValue);
                         EditorGUI.PropertyField(r3, off, GUIContent.none);
                         EditorGUI.EndDisabledGroup();
@@ -175,7 +175,7 @@ namespace gomoru.su.clothfire
                         r2.y += EditorGUIUtility.singleLineHeight + 4;
                         r3.y += EditorGUIUtility.singleLineHeight + 4;
                         EditorGUI.LabelField(r1, "ON");
-                        changeOn.boolValue = EditorGUI.ToggleLeft(r2, GUIContent.none, changeOn.boolValue);
+                        GUIUtils.ToggleLeft(r2, changeOn, GUIContent.none);
                         EditorGUI.BeginDisabledGroup(!changeOn.boolValue);
                         EditorGUI.PropertyField(r3, on, GUIContent.none);
                         EditorGUI.EndDisabledGroup();
