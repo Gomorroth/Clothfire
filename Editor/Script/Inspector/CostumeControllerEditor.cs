@@ -15,8 +15,6 @@ namespace gomoru.su.clothfire
 
         private SerializedProperty _additionalControls;
 
-        private Dictionary<int, ReorderableList> _additionalControlLists;
-
         public void OnEnable()
         {
             foreach(var target in targets)
@@ -25,14 +23,13 @@ namespace gomoru.su.clothfire
                     ccg.TryRefleshItems();
             }
 
-            _additionalControlLists = new Dictionary<int, ReorderableList>();
-
             _itemsProperty = serializedObject.FindProperty(nameof(CostumeController.Items));
             _itemList = new ReorderableList(serializedObject, _itemsProperty)
             {
                 displayAdd = false,
                 displayRemove = false,
                 draggable = true,
+                footerHeight = 0,
                 elementHeightCallback = GetHeight,
                 drawElementCallback = DrawItem,
                 drawHeaderCallback = rect => EditorGUI.LabelField(rect, "Items"),
@@ -110,7 +107,7 @@ namespace gomoru.su.clothfire
             rendererRect.width -= activeCheckRect.width + 2;
 
             EditorGUI.BeginDisabledGroup(!isInclude.boolValue);
-            isActiveByDefault.boolValue = EditorGUI.ToggleLeft(activeCheckRect, GUIContent.none, isActiveByDefault.boolValue);
+            GUIUtils.ToggleLeft(activeCheckRect, isActiveByDefault, GUIContent.none);
             EditorGUI.ObjectField(rendererRect, renderer.gameObject, typeof(GameObject), false);
             EditorGUI.EndDisabledGroup();
 
@@ -125,21 +122,21 @@ namespace gomoru.su.clothfire
 
                 var checkBoxRect = lineRect;
                 checkBoxRect.width /= 4;
-                isInclude.boolValue = EditorGUI.ToggleLeft(checkBoxRect, "Include", isInclude.boolValue);
+                GUIUtils.ToggleLeft(checkBoxRect, isInclude, "Include".ToGUIContent());
 
                 EditorGUI.BeginDisabledGroup(!isInclude.boolValue);
 
                 checkBoxRect.x += checkBoxRect.width;
-                isActiveByDefault.boolValue = EditorGUI.ToggleLeft(checkBoxRect, "Active", isActiveByDefault.boolValue);
+                GUIUtils.ToggleLeft(checkBoxRect, isActiveByDefault, "Active".ToGUIContent());
 
                 var settings = item.FindPropertyRelative(nameof(ClothItem.ParameterSettings));
                 var save = settings.FindPropertyRelative(nameof(ParameterSettings.IsSave));
                 var localOnly = settings.FindPropertyRelative(nameof(ParameterSettings.IsLocal));
 
                 checkBoxRect.x += checkBoxRect.width;
-                save.boolValue = EditorGUI.ToggleLeft(checkBoxRect, "Save", save.boolValue);
+                GUIUtils.ToggleLeft(checkBoxRect, save, "Save".ToGUIContent());
                 checkBoxRect.x += checkBoxRect.width;
-                localOnly.boolValue = EditorGUI.ToggleLeft(checkBoxRect, "Local Only", localOnly.boolValue);
+                GUIUtils.ToggleLeft(checkBoxRect, localOnly, "Local Only".ToGUIContent());
 
                 var listRect = lineRect;
                 listRect.y += EditorGUIUtility.singleLineHeight;
@@ -150,21 +147,8 @@ namespace gomoru.su.clothfire
                 {
                     listRect.y += EditorGUIUtility.singleLineHeight;
 
-                    if (!_additionalControlLists.TryGetValue(index, out var list))
-                    {
-                        list = new ReorderableList(serializedObject, _additionalControls)
-                        {
-                            displayAdd = true,
-                            displayRemove = true,
-                            draggable = true,
-                            headerHeight = 0.5f,
-                            elementHeightCallback = idx => AdditionalControlDrawer.Height,
-                            drawElementCallback = (Rect rect2, int index2, bool isActive2, bool isFocused2) => EditorGUI.PropertyField(rect2, _additionalControls.GetArrayElementAtIndex(index2)),
-                        };
-                        _additionalControlLists.Add(index, list);
-                    }
-
-                    list.DoList(listRect);
+                    _additionalControlList.serializedProperty = _additionalControls;
+                    _additionalControlList.DoList(listRect);
                 }
 
                 EditorGUI.EndDisabledGroup();
