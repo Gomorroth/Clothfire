@@ -13,6 +13,7 @@ using Object = UnityEngine.Object;
 namespace gomoru.su.clothfire
 {
     [CustomEditor(typeof(Preset))]
+    [CanEditMultipleObjects]
     internal sealed class PresetEditor : Editor
     {
         private VRCAvatarDescriptor _avatar;
@@ -23,16 +24,20 @@ namespace gomoru.su.clothfire
 
         internal void OnEnable()
         {
-            var preset = target as Preset;
-            _avatar = preset?.GetComponentInParent<VRCAvatarDescriptor>();
-            if (preset == null || _avatar == null)
+            _avatar = (target as Preset)?.GetComponentInParent<VRCAvatarDescriptor>();
+            if (_avatar == null)
                 return;
 
-            preset.TryRefleshItems();
-
-            if (string.IsNullOrEmpty(preset.PresetName))
+            foreach(var target in targets)
             {
-                preset.PresetName = preset.name;
+                var preset = target as Preset;
+
+                preset.TryRefleshItems();
+
+                if (string.IsNullOrEmpty(preset.PresetName))
+                {
+                    preset.PresetName = preset.name;
+                }
             }
 
             _presetList = new ReorderableList(serializedObject, serializedObject.FindProperty(nameof(Preset.Targets)))
@@ -64,7 +69,7 @@ namespace gomoru.su.clothfire
                     var obj = target.objectReferenceValue as GameObject;
 
                     EditorGUI.BeginDisabledGroup(!incldue.boolValue);
-                    active.boolValue = EditorGUI.ToggleLeft(checkRect, GUIContent.none, active.boolValue);
+                    GUIUtils.ToggleLeft(checkRect, active, GUIContent.none);
                     if (parent is IControlGroup group && !string.IsNullOrEmpty(group.GroupName))
                     {
                         var rect = fieldRect;
@@ -73,7 +78,7 @@ namespace gomoru.su.clothfire
                         fieldRect.width -= rect.width + 4;
                         DrawGroupMaster(rect, group);
                     }
-                    EditorGUI.ObjectField(fieldRect, obj, typeof(GameObject), true);
+                    EditorGUI.PropertyField(fieldRect, target, GUIContent.none);
                     EditorGUI.EndDisabledGroup();
 
                     if (prop.isExpanded = EditorGUI.Foldout(position, prop.isExpanded, GUIContent.none, true))
@@ -81,12 +86,12 @@ namespace gomoru.su.clothfire
                         var checkBoxRect = position;
                         checkBoxRect.y += EditorGUIUtility.singleLineHeight;
                         checkBoxRect.width /= 2;
-                        incldue.boolValue = EditorGUI.ToggleLeft(checkBoxRect, "Include", incldue.boolValue);
+                        GUIUtils.ToggleLeft(checkBoxRect, incldue, "Include".ToGUIContent());
 
                         EditorGUI.BeginDisabledGroup(!incldue.boolValue);
 
                         checkBoxRect.x += checkBoxRect.width;
-                        active.boolValue = EditorGUI.ToggleLeft(checkBoxRect, "Active", active.boolValue);
+                        GUIUtils.ToggleLeft(checkBoxRect, active, "Active".ToGUIContent());
                         EditorGUI.EndDisabledGroup();
                     }
 
@@ -105,10 +110,16 @@ namespace gomoru.su.clothfire
             _presetList.DoLayoutList();
 
             EditorGUILayout.Space(4);
-            EditorGUILayout.LabelField("Utilities", EditorStyles.boldLabel);
 
-            ToggleByGroup();
-            SyncHierarchy();
+            if (serializedObject.targetObjects.Length <= 1)
+            {
+
+                EditorGUILayout.LabelField("Utilities", EditorStyles.boldLabel);
+
+                ToggleByGroup();
+                SyncHierarchy();
+
+            }
 
             serializedObject.ApplyModifiedProperties();
         }

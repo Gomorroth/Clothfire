@@ -12,6 +12,7 @@ using Object = UnityEngine.Object;
 namespace gomoru.su.clothfire
 {
     [CustomEditor(typeof(ConditionalController))]
+    [CanEditMultipleObjects]
     internal sealed class ConditionalControllerEditor : Editor
     {
         private ReorderableList _conditionList;
@@ -43,13 +44,21 @@ namespace gomoru.su.clothfire
                     rect2.x += rect1.width + 4;
 
                     EditorGUI.BeginChangeCheck();
+                    EditorGUI.showMixedValue = path.hasMultipleDifferentValues;
                     idx = EditorGUI.Popup(rect1, idx, _conditions);
                     if (EditorGUI.EndChangeCheck())
                     {
                         path.objectReferenceValue = _targets[idx];
                     }
 
-                    state.boolValue = EditorGUI.Popup(rect2, state.boolValue ? 1 : 0, ONOFF) != 0;
+                    EditorGUI.BeginChangeCheck();
+                    EditorGUI.showMixedValue = state.hasMultipleDifferentValues;
+                    var flag = EditorGUI.Popup(rect2, state.boolValue ? 1 : 0, ONOFF) != 0;
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        state.boolValue = flag;
+                    }
+                    EditorGUI.showMixedValue = false;
                 },
             };
             _controlList = new ReorderableList(serializedObject, serializedObject.FindProperty(nameof(ConditionalController.Controls)))

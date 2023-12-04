@@ -18,5 +18,20 @@ namespace gomoru.su.clothfire
         }
 
         public static GUIContent ToGUIContent(this string text, string toolTip = null, Texture image = null) => GetTempContent(text, toolTip, image);
+
+        public static bool ToggleLeft(Rect position, SerializedProperty property, GUIContent label)
+        {
+            EditorGUI.BeginChangeCheck();
+            var showMixedValue = EditorGUI.showMixedValue;
+            EditorGUI.showMixedValue = property.hasMultipleDifferentValues;
+            var value = EditorGUI.ToggleLeft(position, label, property.boolValue);
+            EditorGUI.showMixedValue = showMixedValue;
+            if (EditorGUI.EndChangeCheck())
+            {
+                property.boolValue = value;
+                return true;
+            }
+            return false;
+        }
     }
 }

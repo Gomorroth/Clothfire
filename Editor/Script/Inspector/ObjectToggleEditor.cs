@@ -10,6 +10,7 @@ using UnityEngine;
 namespace gomoru.su.clothfire
 {
     [CustomEditor(typeof(ObjectToggle))]
+    [CanEditMultipleObjects]
     internal sealed class ObjectToggleEditor : Editor
     {
         private ReorderableList _additionalControlList;
