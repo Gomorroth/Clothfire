@@ -242,6 +242,26 @@ namespace gomoru.su.clothfire
                 }
             }
 
+            {
+                var index = control.FindPropertyRelative(nameof(MaterialControl.Index));
+                if (renderer == null || index.hasMultipleDifferentValues)
+                {
+                    EditorGUI.showMixedValue = index.hasMultipleDifferentValues;
+                    EditorGUILayout.PropertyField(index, GUIContent.none);
+                    EditorGUI.showMixedValue = false;
+                }
+                else
+                {
+                    var contents = renderer.sharedMaterials.Select(x => new GUIContent(x.name)).ToArray();
+                    EditorGUI.BeginChangeCheck();
+                    int value = EditorGUI.Popup(idxRect, index.intValue, contents);
+                    if (EditorGUI.EndChangeCheck())
+                    {
+                        index.intValue = value;
+                    }
+                }
+            }
+
             EditorGUI.PropertyField(idxRect, control.FindPropertyRelative(nameof(MaterialControl.Index)), GUIContent.none);
 
             var on = control.FindPropertyRelative(nameof(MaterialControl.ON));

@@ -200,6 +200,12 @@ namespace gomoru.su.clothfire.ndmf
 
         }
 
+        private bool SetMaterialControlAnimation(AdditionalControl control, GameObject avatarRootObject, AnimationClip off, AnimationClip on)
+        {
+            var materialControl = control.Material;
+            return true;
+        }
+
         private sealed class AdditionalControlBlendTree : DirectBlendTreeItemBase
         {
             public Motion ON { get; set; }
