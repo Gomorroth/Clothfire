@@ -163,7 +163,9 @@ namespace gomoru.su.clothfire
                     {
                         foreach (ref var x in preset.Targets.AsSpan())
                         {
-                            if (x.Parent is IControlGroup g && g.GroupName == group.Key)
+                            var g = x.Parent as IControlGroup;
+                            var name = g?.GroupName ?? string.Empty;
+                            if (name == group.Key)
                             {
                                 if (activeChanged)
                                     x.Active = actived;
