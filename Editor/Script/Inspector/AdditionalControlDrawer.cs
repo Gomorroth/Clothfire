@@ -221,8 +221,8 @@ namespace gomoru.su.clothfire
                 renderer = EditorGUI.ObjectField(fieldRect, GUIContent.none, renderer, typeof(Renderer), true) as Renderer;
                 if (EditorGUI.EndChangeCheck())
                 {
-                    var objPath = renderer.gameObject.GetRelativePath(root.gameObject);
-                    if (objPath == null) // Not found
+                    var objPath = renderer?.gameObject.GetRelativePath(root.gameObject);
+                    if (renderer != null &&  objPath == null) // Not found
                     {
                         if (!isAbsolute.boolValue)
                         {
@@ -247,7 +247,7 @@ namespace gomoru.su.clothfire
                 if (renderer == null || index.hasMultipleDifferentValues)
                 {
                     EditorGUI.showMixedValue = index.hasMultipleDifferentValues;
-                    EditorGUILayout.PropertyField(index, GUIContent.none);
+                    EditorGUI.PropertyField(idxRect, index, GUIContent.none);
                     EditorGUI.showMixedValue = false;
                 }
                 else
@@ -261,8 +261,6 @@ namespace gomoru.su.clothfire
                     }
                 }
             }
-
-            EditorGUI.PropertyField(idxRect, control.FindPropertyRelative(nameof(MaterialControl.Index)), GUIContent.none);
 
             var on = control.FindPropertyRelative(nameof(MaterialControl.ON));
             var off = control.FindPropertyRelative(nameof(MaterialControl.OFF));
