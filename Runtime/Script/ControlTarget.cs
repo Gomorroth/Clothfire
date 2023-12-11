@@ -20,9 +20,10 @@ namespace gomoru.su.clothfire
         {
             var list = SharedList;
             list.Clear();
-            foreach (var x in root.GetComponentsInChildren<IControlTargetProvider>())
+            foreach (var x in root.GetComponentsInChildren<IControlTargetProvider>(true))
             {
-                if ((x as Component).CompareTag("EditorOnly"))
+                var y = x as MonoBehaviour;
+                if (y.CompareTag("EditorOnly") || !y.enabled)
                     continue;
 
                 x.GetControlTargets(list);
