@@ -55,7 +55,7 @@ jobs:
           type: "zip"
           directory: "./Packages/${{env.packageName}}"
           filename: "../../${{env.zipFile}}"
-          exclusions: '*.git*'
+          exclusions: '(*.git*|docs/*)'
 
       - name: Make Release
         if: ${{ steps.version.outputs.prop != '0.0.0' }}
