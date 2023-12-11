@@ -226,7 +226,7 @@ namespace gomoru.su.clothfire.ndmf
             var onMat = materialControl.IsChangeON ? materialControl.ON : material;
             var offMat = materialControl.IsChangeOFF ? materialControl.OFF : material;
 
-            var binding = new EditorCurveBinding() { path = path, type = renderer.GetType(), propertyName = $"" };
+            var binding = new EditorCurveBinding() { path = path, type = renderer.GetType(), propertyName = $"m_Materials.Array.data[{materialControl.Index}]" };
             var keys = Utils.Single<ObjectReferenceKeyframe>();
             keys[0].value = offMat;
             AnimationUtility.SetObjectReferenceCurve(off, binding, keys);
