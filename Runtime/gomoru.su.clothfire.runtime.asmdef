@@ -1,5 +1,6 @@
 {
     "name": "gomoru.su.clothfire.runtime",
+    "rootNamespace": "gomoru.su.clothfire",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

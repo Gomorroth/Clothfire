@@ -1,5 +1,6 @@
 {
     "name": "gomoru.su.clothfire.editor",
+    "rootNamespace": "gomoru.su.clothfire",
     "references": [
         "gomoru.su.clothfire.runtime",
         "nadena.dev.modular-avatar.core",
