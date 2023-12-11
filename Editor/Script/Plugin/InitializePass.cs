@@ -14,6 +14,10 @@ namespace gomoru.su.clothfire.ndmf
 
             Session.DirectBlendTree = new DirectBlendTree();
             Session.Configuration = context.AvatarRootObject.GetComponentInChildren<Configuration>();
+            if (Session.Configuration == null)
+            {
+                Session.Configuration = Configuration.AddConfiguration(context.AvatarRootObject);
+            }
 
             return true;
         }

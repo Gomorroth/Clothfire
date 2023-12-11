@@ -20,8 +20,7 @@ namespace gomoru.su.clothfire
         [MenuItem(AddConfigurationPath, false, Priority)]
         public static void AddConfiguration()
         {
-            var prefab = PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(ConfigurationPrefabGUID))) as GameObject;
-            prefab.transform.parent = Selection.activeGameObject.transform;
+            Configuration.AddConfiguration(Selection.activeGameObject);
         }
 
         [MenuItem(AddConfigurationPath, true, Priority)]
