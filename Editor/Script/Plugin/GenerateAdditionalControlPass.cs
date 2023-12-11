@@ -48,6 +48,9 @@ namespace gomoru.su.clothfire.ndmf
                         case AdditionalControl.ControlType.Blendshape:
                             succss &= SetBlendshapeAnimation(control, context.AvatarRootObject, off, on);
                             break;
+                        case AdditionalControl.ControlType.Material:
+                            succss &= SetMaterialControlAnimation(control, context.AvatarRootObject, off, on);
+                            break;
                     }
 
                     if (!succss)
@@ -203,6 +206,33 @@ namespace gomoru.su.clothfire.ndmf
         private bool SetMaterialControlAnimation(AdditionalControl control, GameObject avatarRootObject, AnimationClip off, AnimationClip on)
         {
             var materialControl = control.Material;
+            GameObject target;
+            string path;
+            if (control.IsAbsolute)
+            {
+                target = avatarRootObject.Find(materialControl.Path);
+                path = materialControl.Path;
+            }
+            else
+            {
+                target = control.Root.Find(materialControl.Path);
+                path = target.GetRelativePath(avatarRootObject);
+            }
+
+            if (target == null || !(target.GetComponent<Renderer>() is Renderer renderer) || renderer.sharedMaterials.Length < materialControl.Index)
+                return false;
+
+            var material = renderer.sharedMaterials[materialControl.Index];
+            var onMat = materialControl.IsChangeON ? materialControl.ON : material;
+            var offMat = materialControl.IsChangeOFF ? materialControl.OFF : material;
+
+            var binding = new EditorCurveBinding() { path = path, type = renderer.GetType(), propertyName = $"" };
+            var keys = Utils.Single<ObjectReferenceKeyframe>();
+            keys[0].value = offMat;
+            AnimationUtility.SetObjectReferenceCurve(off, binding, keys);
+            keys[0].value = onMat;
+            AnimationUtility.SetObjectReferenceCurve(on, binding, keys);
+
             return true;
         }
 
