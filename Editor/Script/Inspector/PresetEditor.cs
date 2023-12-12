@@ -105,7 +105,7 @@ namespace gomoru.su.clothfire
             serializedObject.Update();
 
             EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(Preset.PresetName)), "Name".ToGUIContent());
-            EditorGUILayout.PropertyField(serializedObject.FindProperty(nameof(Preset.Group)));
+            GUIUtils.GroupField(serializedObject.FindProperty(nameof(Preset.Group)), () => (target as Component).gameObject.GetRootObject(), type: GroupType.Preset);
 
             _presetList.DoLayoutList();
 

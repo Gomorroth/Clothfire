@@ -15,6 +15,7 @@ namespace gomoru.su.clothfire
         public string GroupName => gameObject.name;
         GameObject IControlGroup.GroupMaster => gameObject;
         GameObject IAdditionalControlProvider.GameObject => gameObject;
+        GroupType IControlGroup.GroupType => GroupType.Control;
 
         public bool TryRefleshItems()
         {

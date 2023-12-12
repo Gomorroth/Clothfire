@@ -8,12 +8,18 @@ using Object = UnityEngine.Object;
 namespace gomoru.su.clothfire
 {
     [AddComponentMenu("Clothfire/Clothfire Preset")]
-    public sealed class Preset : ClothfireBaseComponent, IHierarchyChangedCallback
+    public sealed class Preset : ClothfireBaseComponent, IHierarchyChangedCallback, IControlGroup
     {
         public string PresetName;
         public string Group;
         public List<PresetItem> Targets = new List<PresetItem>();
         public int HashCode;
+
+        string IControlGroup.GroupName => Group;
+
+        GameObject IControlGroup.GroupMaster => gameObject;
+
+        GroupType IControlGroup.GroupType => GroupType.Preset;
 
         public bool TryRefleshItems()
         {
