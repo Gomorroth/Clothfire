@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 using static VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionsMenu;
 
@@ -35,29 +36,47 @@ namespace gomoru.su.clothfire
             return false;
         }
 
-        public static void GroupField(SerializedProperty property, GameObject avatarRootObject, GUIContent label = null)
+        public static void GroupField(SerializedProperty property, Func<GameObject> avatarRootObject, GUIContent label = null, GroupType type = GroupType.All)
         {
             var rect = EditorGUILayout.GetControlRect(label != null, EditorGUIUtility.singleLineHeight);
-            GroupField(rect, property, avatarRootObject, label);
+            GroupField(rect, property, avatarRootObject, label, type);
         }
 
-        public static void GroupField(Rect position, SerializedProperty property, GameObject avatarRootObject, GUIContent label = null)
+        public static void GroupField(Rect position, SerializedProperty property, Func<GameObject> avatarRootObject, GUIContent label = null, GroupType type = GroupType.All)
         {
-            var left = position;
-            var buttonRect = left;
+            if (label == null)
+                label = property.displayName.ToGUIContent();
+
+            label = EditorGUI.BeginProperty(position, label, property);
+
+            var field = position;
+            if (label != GUIContent.none)
+            {
+                var labelRect = position;
+                labelRect.width = EditorGUIUtility.labelWidth;
+                field.x += labelRect.width + 2f;
+                field.width -= labelRect.width + 2f;
+                EditorGUI.LabelField(labelRect, label);
+            }
+
+            var buttonRect = field;
             buttonRect.x += buttonRect.width - EditorGUIUtility.singleLineHeight;
             buttonRect.width = EditorGUIUtility.singleLineHeight;
             EditorGUIUtility.AddCursorRect(buttonRect, MouseCursor.Arrow);
-            buttonRect = GUIUtils.ObjectFieldButtonStyle.margin.Remove(buttonRect);
+            buttonRect = ObjectFieldButtonStyle.margin.Remove(buttonRect);
             if (GUI.Button(buttonRect, GUIContent.none, GUIStyle.none))
             {
-                GroupSelector.Show(buttonRect, avatarRootObject, x => { property.stringValue = x; property.serializedObject.ApplyModifiedProperties(); });
+                GroupSelector.Show(buttonRect, avatarRootObject(), x => { property.stringValue = x; property.serializedObject.ApplyModifiedProperties(); }, type);
             }
-            EditorGUI.PropertyField(left, property, GUIContent.none);
+            EditorGUI.showMixedValue = property.hasMultipleDifferentValues;
+            EditorGUI.PropertyField(field, property, GUIContent.none);
+            EditorGUI.showMixedValue = false;
             if (Event.current.type == EventType.Repaint)
             {
                 ObjectFieldButtonStyle.Draw(buttonRect, GUIContent.none, 0, true, buttonRect.Contains(Event.current.mousePosition));
             }
+
+            EditorGUI.EndProperty();
         }
     }
 }
