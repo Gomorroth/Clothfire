@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using static VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionsMenu;
 
 namespace gomoru.su.clothfire
 {
@@ -32,6 +33,31 @@ namespace gomoru.su.clothfire
                 return true;
             }
             return false;
+        }
+
+        public static void GroupField(SerializedProperty property, GameObject avatarRootObject, GUIContent label = null)
+        {
+            var rect = EditorGUILayout.GetControlRect(label != null, EditorGUIUtility.singleLineHeight);
+            GroupField(rect, property, avatarRootObject, label);
+        }
+
+        public static void GroupField(Rect position, SerializedProperty property, GameObject avatarRootObject, GUIContent label = null)
+        {
+            var left = position;
+            var buttonRect = left;
+            buttonRect.x += buttonRect.width - EditorGUIUtility.singleLineHeight;
+            buttonRect.width = EditorGUIUtility.singleLineHeight;
+            EditorGUIUtility.AddCursorRect(buttonRect, MouseCursor.Arrow);
+            buttonRect = GUIUtils.ObjectFieldButtonStyle.margin.Remove(buttonRect);
+            if (GUI.Button(buttonRect, GUIContent.none, GUIStyle.none))
+            {
+                GroupSelector.Show(buttonRect, avatarRootObject, x => { property.stringValue = x; property.serializedObject.ApplyModifiedProperties(); });
+            }
+            EditorGUI.PropertyField(left, property, GUIContent.none);
+            if (Event.current.type == EventType.Repaint)
+            {
+                ObjectFieldButtonStyle.Draw(buttonRect, GUIContent.none, 0, true, buttonRect.Contains(Event.current.mousePosition));
+            }
         }
     }
 }
