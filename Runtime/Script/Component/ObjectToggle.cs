@@ -15,6 +15,7 @@ namespace gomoru.su.clothfire
         public string GroupName => Group;
         GameObject IControlGroup.GroupMaster => null;
         GameObject IAdditionalControlProvider.GameObject => gameObject;
+        GroupType IControlGroup.GroupType => GroupType.Control;
 
         public GameObject TargetObject => gameObject;
 

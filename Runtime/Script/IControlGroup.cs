@@ -6,5 +6,6 @@ namespace gomoru.su.clothfire
     {
         string GroupName { get; }
         GameObject GroupMaster { get; }
+        GroupType GroupType { get; }
     }
 }
