@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
-using Object = UnityEngine.Object;
 
 namespace gomoru.su.clothfire
 {
@@ -28,7 +23,7 @@ namespace gomoru.su.clothfire
             if (_avatar == null)
                 return;
 
-            foreach(var target in targets)
+            foreach (var target in targets)
             {
                 var preset = target as Preset;
 
@@ -192,7 +187,7 @@ namespace gomoru.su.clothfire
                 {
                     var preset = target as Preset;
 
-                    foreach(ref var x in preset.Targets.AsSpan())
+                    foreach (ref var x in preset.Targets.AsSpan())
                     {
                         if (toHierarchy)
                         {

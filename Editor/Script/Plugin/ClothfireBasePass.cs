@@ -1,6 +1,6 @@
-﻿using System;
-using nadena.dev.modular_avatar.core;
+﻿using nadena.dev.modular_avatar.core;
 using nadena.dev.ndmf;
+using System;
 using UnityEngine;
 using VRC.SDK3.Avatars.ScriptableObjects;
 using Object = UnityEngine.Object;
@@ -39,7 +39,7 @@ namespace gomoru.su.clothfire.ndmf
                     Session.Handled = true;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.LogException(e);
                 Session.Handled = true;

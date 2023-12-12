@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Buffers;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace gomoru.su.clothfire
 {
@@ -94,7 +89,7 @@ namespace gomoru.su.clothfire
             var items = ControlTarget.GetControlTargets(avatarRootObject);
             var contents = new GUIContent[items.Length];
             var targets = ArrayPool<GameObject>.Shared.Rent(items.Length);
-            for(int i = 0; i < items.Length; i++)
+            for (int i = 0; i < items.Length; i++)
             {
                 targets[i] = avatarRootObject.Find(items[i].Path);
                 string name = items[i].ToParameterName(avatarRootObject);

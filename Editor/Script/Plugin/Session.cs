@@ -1,6 +1,4 @@
-﻿using nadena.dev.modular_avatar.core;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace gomoru.su.clothfire.ndmf

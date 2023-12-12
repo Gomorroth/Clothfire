@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using nadena.dev.ndmf.util;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -17,7 +15,7 @@ namespace gomoru.su.clothfire
 
         public void OnEnable()
         {
-            foreach(var target in targets)
+            foreach (var target in targets)
             {
                 if (target is CostumeController ccg)
                     ccg.TryRefleshItems();

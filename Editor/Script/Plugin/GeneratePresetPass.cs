@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
-using UnityEditor.Presets;
 using UnityEngine;
 using VRC.SDK3.Avatars.Components;
 
@@ -26,7 +25,7 @@ namespace gomoru.su.clothfire.ndmf
 
             var presets = _presets = context.AvatarRootObject.GetComponentsInChildren<Preset>();
             if (presets?.Length == 0)
-              return true;
+                return true;
 
             var controller = new AnimatorController();
             var mama = context.AvatarRootObject.AddComponent<ModularAvatarMergeAnimator>();
@@ -43,7 +42,7 @@ namespace gomoru.su.clothfire.ndmf
             idle.motion = blank;
             stateMachine.defaultState = idle;
 
-            foreach(var (preset, i) in presets.Select(Tuple.Create<Preset, int>))
+            foreach (var (preset, i) in presets.Select(Tuple.Create<Preset, int>))
             {
                 var name = preset.PresetName;
                 if (!string.IsNullOrEmpty(preset.Group))
@@ -53,7 +52,7 @@ namespace gomoru.su.clothfire.ndmf
                 var state = stateMachine.AddState(name);
                 state.motion = blank;
                 var driver = state.AddStateMachineBehaviour<VRCAvatarParameterDriver>();
-                foreach(var target in preset.Targets.AsSpan())
+                foreach (var target in preset.Targets.AsSpan())
                 {
                     if (!target.Include)
                         continue;
@@ -79,10 +78,10 @@ namespace gomoru.su.clothfire.ndmf
 
         private void GenerateGroupTogglePreset(GameObject avatarRootObject)
         {
-            foreach(var group in ControlTarget.GetControlTargetsAsList(avatarRootObject).Where(x => x.Parent is IControlGroup group && !string.IsNullOrEmpty(group.GroupName)).GroupBy(x => (x.Parent as IControlGroup)?.GroupName ?? string.Empty).OrderBy(x => x.Key))
+            foreach (var group in ControlTarget.GetControlTargetsAsList(avatarRootObject).Where(x => x.Parent is IControlGroup group && !string.IsNullOrEmpty(group.GroupName)).GroupBy(x => (x.Parent as IControlGroup)?.GroupName ?? string.Empty).OrderBy(x => x.Key))
             {
                 var on = new GameObject($"ON");
-                var off  = new GameObject($"OFF");
+                var off = new GameObject($"OFF");
                 on.transform.parent = avatarRootObject.transform;
                 off.transform.parent = avatarRootObject.transform;
                 var on_preset = on.AddComponent<Preset>();

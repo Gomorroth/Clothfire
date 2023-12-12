@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace gomoru.su.clothfire
 {
@@ -222,7 +216,7 @@ namespace gomoru.su.clothfire
                 if (EditorGUI.EndChangeCheck())
                 {
                     var objPath = renderer?.gameObject.GetRelativePath(root.gameObject);
-                    if (renderer != null &&  objPath == null) // Not found
+                    if (renderer != null && objPath == null) // Not found
                     {
                         if (!isAbsolute.boolValue)
                         {

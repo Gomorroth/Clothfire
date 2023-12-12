@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
-using nadena.dev.modular_avatar.core;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace gomoru.su.clothfire
 {

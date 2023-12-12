@@ -26,7 +26,7 @@ namespace gomoru.su.clothfire.ndmf
                 x.GetAdditionalControls(container);
             }
 
-            foreach(var item in container.Items)
+            foreach (var item in container.Items)
             {
                 var tree = new AdditionalControlBlendTree() { Conditions = item.Key, Session = Session };
 
@@ -93,7 +93,7 @@ namespace gomoru.su.clothfire.ndmf
 
             EditorUtility.CopySerializedIfDifferent(s_on, off);
             EditorUtility.CopySerializedIfDifferent(s_off, on);
-            
+
             return true;
         }
 
@@ -106,10 +106,10 @@ namespace gomoru.su.clothfire.ndmf
             animation.name = $"{name}";
 
             var bindings = AnimationUtility.GetCurveBindings(animation)
-                .Select(x => (Binding: x, RemappedBinding: RemapBinding(x, currentRootObject, avatarRootObject), Editor:AnimationUtility.GetEditorCurve(animation, x), Object: AnimationUtility.GetObjectReferenceCurve(animation, x)))
+                .Select(x => (Binding: x, RemappedBinding: RemapBinding(x, currentRootObject, avatarRootObject), Editor: AnimationUtility.GetEditorCurve(animation, x), Object: AnimationUtility.GetObjectReferenceCurve(animation, x)))
                 ;
 
-            foreach(var x in bindings)
+            foreach (var x in bindings)
             {
                 if (x.Editor != null)
                 {
@@ -122,7 +122,7 @@ namespace gomoru.su.clothfire.ndmf
                     AnimationUtility.SetObjectReferenceCurve(animation, x.RemappedBinding, x.Object);
                 }
             }
-                
+
             return animation;
         }
 
@@ -141,7 +141,7 @@ namespace gomoru.su.clothfire.ndmf
             AnimationUtility.SetAnimationClipSettings(destination, AnimationUtility.GetAnimationClipSettings(source));
             destination.name = $"{source.name} (Default)";
 
-            foreach(var binding in AnimationUtility.GetCurveBindings(source))
+            foreach (var binding in AnimationUtility.GetCurveBindings(source))
             {
                 var obj = rootObject.Find(binding.path);
                 if (obj == null) continue;
@@ -150,7 +150,7 @@ namespace gomoru.su.clothfire.ndmf
                     && AnimationUtility.GetFloatValue(rootObject, binding, out var value))
                 {
                     var keys = editorCurve.keys;
-                    foreach(ref var key in keys.AsSpan())
+                    foreach (ref var key in keys.AsSpan())
                     {
                         key.value = value;
                     }
@@ -160,7 +160,7 @@ namespace gomoru.su.clothfire.ndmf
                 if (AnimationUtility.GetObjectReferenceCurve(source, binding) is ObjectReferenceKeyframe[] objectKeys
                     && AnimationUtility.GetObjectReferenceValue(rootObject, binding, out var objValue))
                 {
-                    foreach(ref var x in objectKeys.AsSpan())
+                    foreach (ref var x in objectKeys.AsSpan())
                     {
                         x.value = objValue;
                     }
@@ -249,7 +249,7 @@ namespace gomoru.su.clothfire.ndmf
             {
                 var blendTree = new BlendTree().AddTo(assetContainer);
                 var root = blendTree;
-                foreach(var condition in Conditions.SkipLast(1))
+                foreach (var condition in Conditions.SkipLast(1))
                 {
                     blendTree.blendParameter = Session.ParameterDictionary[condition.Object];
                     BlendTree child;
