@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -22,7 +18,7 @@ namespace gomoru.su.clothfire
             if (EditorApplication.isPlayingOrWillChangePlaymode)
                 return;
 
-            foreach(var component in Object.FindObjectsOfType<Component>().Where(x => x is IHierarchyChangedCallback))
+            foreach (var component in Object.FindObjectsOfType<Component>().Where(x => x is IHierarchyChangedCallback))
             {
                 (component as IHierarchyChangedCallback).OnHierarchyChanged();
             }

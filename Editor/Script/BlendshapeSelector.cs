@@ -12,7 +12,7 @@ namespace gomoru.su.clothfire
 
             var items = TemporaryMemory<string>.Allocate(targetMesh.blendShapeCount);
             var span = items.Span;
-            for(int i = 0; i < span.Length; i++)
+            for (int i = 0; i < span.Length; i++)
             {
                 span[i] = targetMesh.GetBlendShapeName(i);
             }

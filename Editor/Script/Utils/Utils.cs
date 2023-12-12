@@ -1,9 +1,6 @@
-﻿using Mono.Cecil;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace gomoru.su.clothfire
@@ -30,7 +27,7 @@ namespace gomoru.su.clothfire
         private static IEnumerable<(int Index, string Name)> BlendshapeIterator(Mesh mesh)
         {
             int count = mesh.blendShapeCount;
-            for(int i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 yield return (i, mesh.GetBlendShapeName(i));
             }

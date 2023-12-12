@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using nadena.dev.ndmf;
+﻿using nadena.dev.ndmf;
 
 [assembly: ExportsPlugin(typeof(gomoru.su.clothfire.ndmf.PluginDefinition))]
 

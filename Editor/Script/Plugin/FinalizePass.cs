@@ -1,7 +1,5 @@
 ﻿using nadena.dev.modular_avatar.core;
 using nadena.dev.ndmf;
-using System;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
@@ -23,7 +21,7 @@ namespace gomoru.su.clothfire.ndmf
             {
                 var param = parameter.ToExpressionParameter();
                 if (!param.nameOrPrefix.StartsWith("//Clothfire/"))
-                param.remapTo = $"//Clothfire/Parameter/{param.nameOrPrefix}";
+                    param.remapTo = $"//Clothfire/Parameter/{param.nameOrPrefix}";
                 map.parameters.Add(param);
             }
 
@@ -75,7 +73,7 @@ namespace gomoru.su.clothfire.ndmf
                 menuInstaller.menuToAppend = null;
             }
 
-            foreach(var pass in PluginDefinition.Passes)
+            foreach (var pass in PluginDefinition.Passes)
             {
                 pass.OnCreateMenu(context, menuRoot);
             }

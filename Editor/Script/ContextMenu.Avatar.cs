@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEditor;
 using VRC.SDK3.Avatars.Components;
 
 namespace gomoru.su.clothfire
@@ -26,7 +20,7 @@ namespace gomoru.su.clothfire
         [MenuItem(AddConfigurationPath, true, Priority)]
         public static bool ValidateAddConfiguration()
         {
-            return Selection.activeGameObject != null && 
+            return Selection.activeGameObject != null &&
                 Selection.activeGameObject.GetComponent<VRCAvatarDescriptor>() != null &&
                 Selection.activeGameObject.GetComponentInChildren<Configuration>() == null;
         }

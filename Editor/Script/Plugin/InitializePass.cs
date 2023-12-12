@@ -1,6 +1,4 @@
 ﻿using nadena.dev.ndmf;
-using System.Runtime.CompilerServices;
-using UnityEditor.Animations;
 
 namespace gomoru.su.clothfire.ndmf
 {

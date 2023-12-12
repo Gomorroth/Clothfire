@@ -2,12 +2,8 @@
 using nadena.dev.ndmf;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace gomoru.su.clothfire.ndmf
 {
@@ -21,7 +17,7 @@ namespace gomoru.su.clothfire.ndmf
 
             Dictionary<string, DirectBlendTree> controlGroup = new Dictionary<string, DirectBlendTree>();
 
-            foreach(var target in Session.ControlTargets)
+            foreach (var target in Session.ControlTargets)
             {
                 var treeParent = treeRoot;
                 if (target.Parent is IControlGroup group)
@@ -71,7 +67,7 @@ namespace gomoru.su.clothfire.ndmf
 
         private static AvatarParameter CreateParameter(string name, bool defaultValue, ParameterSettings parameterSettings)
         {
-            return new AvatarParameter() { Name = name, AnimatorParameterType = AnimatorControllerParameterType.Float, ExpressionParameterType = ParameterSyncType.Bool, DefaultValue = defaultValue ? 1 : 0, IsLocalOnly = parameterSettings.IsLocal, IsSaved = parameterSettings.IsSave }; 
+            return new AvatarParameter() { Name = name, AnimatorParameterType = AnimatorControllerParameterType.Float, ExpressionParameterType = ParameterSyncType.Bool, DefaultValue = defaultValue ? 1 : 0, IsLocalOnly = parameterSettings.IsLocal, IsSaved = parameterSettings.IsSave };
         }
 
         private (AnimationClip OFF, AnimationClip ON) CreateToggleAnimation(string path, string name)
