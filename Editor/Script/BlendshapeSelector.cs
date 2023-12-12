@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace gomoru.su.clothfire
 {
-    internal sealed class BlendshapeSelector : SelectorWindow<string>
+    internal sealed class BlendshapeSelector : StringSelectorWindow<BlendshapeSelector>
     {
         public static void Show(Rect position, Mesh targetMesh, Action<string> callback)
         {
