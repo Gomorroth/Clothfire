@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace gomoru.su.clothfire
@@ -27,6 +28,31 @@ namespace gomoru.su.clothfire
         {
             if (_buffer != null)
                 ArrayPool<T>.Shared.Return(_buffer);
+        }
+    }
+
+    internal static class TemporaryMemoryExtension
+    {
+        public static TemporaryMemory<T> ToTemporaryMemory<T>(this IEnumerable<T> enumerable)
+        {
+            int count;
+            if (enumerable is T[] array)
+                count = array.Length;
+            else if (enumerable is ICollection<T> collection)
+                count = collection.Count;
+            else
+                count = enumerable.Count();
+
+            var memory = TemporaryMemory<T>.Allocate(count);
+
+            var span = memory.Span;
+            int idx = 0;
+            foreach(var x in enumerable)
+            {
+                span[idx++] = x;
+            }
+
+            return memory;
         }
     }
 }
