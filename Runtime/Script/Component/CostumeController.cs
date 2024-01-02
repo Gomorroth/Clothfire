@@ -81,6 +81,9 @@ namespace gomoru.su.clothfire
         {
             foreach(var item in Items.AsSpan())
             {
+                if (!item.IsInclude)
+                    continue;
+
                 var obj = transform.Find(item.Path);
                 if (obj == null)
                     continue;
