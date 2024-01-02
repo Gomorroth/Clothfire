@@ -25,7 +25,7 @@ namespace gomoru.su.clothfire.ndmf
                 map.parameters.Add(param);
             }
 
-            foreach (var x in context.AvatarRootObject.GetComponentsInChildren<ClothfireBaseComponent>())
+            foreach (var x in context.AvatarRootObject.GetComponentsInChildren<ClothfireBaseComponent>(true))
             {
                 Object.DestroyImmediate(x);
             }
