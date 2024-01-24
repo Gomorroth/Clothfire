@@ -19,7 +19,7 @@ namespace gomoru.su.clothfire.ndmf
             var container = new AdditionalControlContainer();
             container.AvatarRootObject = context.AvatarRootObject;
 
-            foreach (var x in context.AvatarRootObject.GetComponentsInChildren<IAdditionalControlProvider>())
+            foreach (var x in context.AvatarRootObject.GetComponentsInChildren<IAdditionalControlProvider>(true))
             {
                 container.CurrentRootObject = x.GameObject;
 
@@ -36,29 +36,21 @@ namespace gomoru.su.clothfire.ndmf
                 AssetDatabase.AddObjectToAsset(off, AssetContainer);
                 AssetDatabase.AddObjectToAsset(on, AssetContainer);
 
-                bool succss = true;
-
                 foreach (var control in item)
                 {
                     switch (control.Type)
                     {
                         case AdditionalControl.ControlType.AnimationClip:
-                            succss &= SetAnimationClipAnimaiton(control, context.AvatarRootObject, off, on);
+                            SetAnimationClipAnimaiton(control, context.AvatarRootObject, off, on);
                             break;
                         case AdditionalControl.ControlType.Blendshape:
-                            succss &= SetBlendshapeAnimation(control, context.AvatarRootObject, off, on);
+                            SetBlendshapeAnimation(control, context.AvatarRootObject, off, on);
                             break;
                         case AdditionalControl.ControlType.Material:
-                            succss &= SetMaterialControlAnimation(control, context.AvatarRootObject, off, on);
+                            SetMaterialControlAnimation(control, context.AvatarRootObject, off, on);
                             break;
                     }
-
-                    if (!succss)
-                        break;
                 }
-
-                if (!succss)
-                    break;
 
                 tree.OFF = off;
                 tree.ON = on;
